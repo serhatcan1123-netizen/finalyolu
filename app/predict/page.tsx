@@ -625,7 +625,7 @@ function KnockoutStage({
 
       <div className="flex justify-between">
         <button onClick={onPrev} className="btn-secondary px-6 py-3">
-          {locale === 'en' ? '← Back' : '← Geri'}
+          ← Geri
         </button>
         <button onClick={onNext} className="btn-primary px-6 py-3">
           {nextLabel}
