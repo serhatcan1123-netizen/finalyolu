@@ -88,7 +88,7 @@ export default function ShareCard({ prediction, score, onClose }: ShareCardProps
               DK2026
             </div>
             <div style={{ fontSize: '0.75rem', color: '#8A8A9A', letterSpacing: '0.1em', marginTop: '0.25rem' }}>
-              2026 FIFA WORLD CUP
+              2026 WORLD CUP
             </div>
           </div>
 

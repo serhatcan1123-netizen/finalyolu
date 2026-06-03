@@ -44,7 +44,7 @@ export default function GroupTable({ group, standings, compact = false }: GroupT
         <h3 className="font-display text-xl tracking-widest" style={{ color: '#C9A84C' }}>
           GRUP {group.id}
         </h3>
-        {!compact && <span className="text-xs font-mono-custom" style={{ color: '#8A8A9A' }}>FIFA WC 2026</span>}
+        {!compact && <span className="text-xs font-mono-custom" style={{ color: '#8A8A9A' }}>WC 2026</span>}
       </div>
 
       <div className="overflow-x-auto">
