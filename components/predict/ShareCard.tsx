@@ -28,7 +28,7 @@ export default function ShareCard({ prediction, score, onClose }: ShareCardProps
       const { toPng } = await import('html-to-image');
       const dataUrl = await toPng(cardRef.current, { quality: 0.95, pixelRatio: 2 });
       const link = document.createElement('a');
-      link.download = 'dk2026-tahminim.png';
+      link.download = 'finalyolu-tahminim.png';
       link.href = dataUrl;
       link.click();
     } catch (e) {
@@ -55,8 +55,8 @@ export default function ShareCard({ prediction, score, onClose }: ShareCardProps
   function shareOnTwitter() {
     const percentage = score?.percentage ?? 0;
     const text = t('share.tweet_text', { percentage });
-    const url = process.env.NEXT_PUBLIC_SITE_URL || 'https://dk2026.com';
-    const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`${text} ${url} #DK2026 #WorldCup2026`)}`;
+    const url = process.env.NEXT_PUBLIC_SITE_URL || 'https://finalyolu.com';
+    const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`${text} ${url} #Finalyolu #WorldCup2026`)}`;
     window.open(tweetUrl, '_blank');
   }
 
@@ -85,7 +85,7 @@ export default function ShareCard({ prediction, score, onClose }: ShareCardProps
           <div className="text-center mb-6">
             <div style={{ fontSize: '2rem', marginBottom: '0.5rem' }}>🏆</div>
             <div style={{ fontFamily: 'Bebas Neue, sans-serif', fontSize: '1.5rem', letterSpacing: '0.2em', color: '#C9A84C' }}>
-              DK2026
+              Finalyolu
             </div>
             <div style={{ fontSize: '0.75rem', color: '#8A8A9A', letterSpacing: '0.1em', marginTop: '0.25rem' }}>
               2026 WORLD CUP
@@ -144,7 +144,7 @@ export default function ShareCard({ prediction, score, onClose }: ShareCardProps
 
           {/* Watermark */}
           <div style={{ textAlign: 'center', fontSize: '0.65rem', color: '#2A2A3A', marginTop: '0.5rem' }}>
-            dk2026.com
+            finalyolu.com
           </div>
         </div>
 
