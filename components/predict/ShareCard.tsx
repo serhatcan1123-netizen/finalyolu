@@ -144,28 +144,28 @@ export default function ShareCard({ prediction, score, onClose }: ShareCardProps
           </div>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.5rem', marginTop: '0.75rem' }}>
-          <button onClick={downloadCard} disabled={downloading}
-            style={{ background: '#C9A84C', color: '#0A0A0F', border: 'none', borderRadius: '10px', padding: '0.65rem', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}>
-            {downloading ? '...' : '⬇ İndir'}
+        <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem', justifyContent: 'center' }}>
+          <button onClick={downloadCard} disabled={downloading} title="İndir"
+            style={{ background: 'rgba(201,168,76,0.1)', color: '#C9A84C', border: '1px solid rgba(201,168,76,0.2)', borderRadius: '50%', width: '44px', height: '44px', fontSize: '1.1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {downloading ? '…' : '⬇'}
           </button>
-          <button onClick={copyCard}
-            style={{ background: 'rgba(201,168,76,0.1)', color: '#C9A84C', border: '1px solid rgba(201,168,76,0.3)', borderRadius: '10px', padding: '0.65rem', fontSize: '0.8rem', fontWeight: 600, cursor: 'pointer' }}>
-            {copied ? '✓ Kopyalandı' : '📋 Kopyala'}
+          <button onClick={copyCard} title="Kopyala"
+            style={{ background: copied ? 'rgba(201,168,76,0.2)' : 'rgba(201,168,76,0.1)', color: '#C9A84C', border: '1px solid rgba(201,168,76,0.2)', borderRadius: '50%', width: '44px', height: '44px', fontSize: '1.1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            {copied ? '✓' : '📋'}
           </button>
-          <button onClick={shareOnWhatsApp}
-            style={{ background: '#25D366', color: 'white', border: 'none', borderRadius: '10px', padding: '0.65rem', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}>
-            💬 WhatsApp
+          <button onClick={shareOnWhatsApp} title="WhatsApp"
+            style={{ background: 'rgba(37,211,102,0.1)', color: '#25D366', border: '1px solid rgba(37,211,102,0.2)', borderRadius: '50%', width: '44px', height: '44px', fontSize: '1.1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            💬
           </button>
-          <button onClick={shareOnTwitter}
-            style={{ background: '#000', color: 'white', border: '1px solid #222', borderRadius: '10px', padding: '0.65rem', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}>
-            𝕏 Twitter
+          <button onClick={shareOnTwitter} title="Twitter"
+            style={{ background: 'rgba(255,255,255,0.05)', color: '#fff', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '50%', width: '44px', height: '44px', fontSize: '1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            𝕏
+          </button>
+          <button onClick={downloadCard} title="Instagram Story için İndir"
+            style={{ background: 'rgba(131,58,180,0.15)', color: '#fd1d1d', border: '1px solid rgba(131,58,180,0.3)', borderRadius: '50%', width: '44px', height: '44px', fontSize: '1.1rem', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            📸
           </button>
         </div>
-        <button onClick={downloadCard}
-          style={{ width: '100%', marginTop: '0.5rem', background: 'linear-gradient(135deg, #833ab4 0%, #fd1d1d 50%, #fcb045 100%)', color: 'white', border: 'none', borderRadius: '10px', padding: '0.65rem', fontSize: '0.8rem', fontWeight: 700, cursor: 'pointer' }}>
-          📸 Instagram Story için İndir
-        </button>
       </div>
     </div>
   );
