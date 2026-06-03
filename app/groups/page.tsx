@@ -1,4 +1,5 @@
 'use client';
+import { useI18n } from '@/lib/i18n';
 
 import { useState } from 'react';
 import Image from 'next/image';
@@ -185,6 +186,7 @@ function GroupCard({ group, expanded, onToggle }: {
 }
 
 export default function GroupsPage() {
+  const { locale } = useI18n();
   const [expandedGroup, setExpandedGroup] = useState<string | null>(null);
 
   return (
