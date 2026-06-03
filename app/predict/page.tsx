@@ -63,7 +63,7 @@ function ProgressBar({ current, total }: { current: number; total: number }) {
 }
 
 export default function PredictPage() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   const [stage, setStage] = useState<Stage>('groups');
   const [groupPage, setGroupPage] = useState(0);
   const [prediction, setPrediction] = useState<TournamentPrediction>(getEmptyPrediction);
@@ -145,10 +145,10 @@ export default function PredictPage() {
             className="text-sm px-4 py-2 rounded-lg border transition-all"
             style={{ color: '#E63946', borderColor: 'rgba(230,57,70,0.3)', background: 'transparent' }}
           >
-            🗑 Sıfırla
+            {locale === 'en' ? '🗑 Reset' : '🗑 Sıfırla'}
           </button>
           <button onClick={handleSave} className="btn-primary text-sm px-4 py-2 rounded-lg">
-            {saved ? '✓ Kaydedildi!' : '💾 Kaydet'}
+            {saved ? locale === 'en' ? '✓ Saved!' : '✓ Kaydedildi!' : locale === 'en' ? '💾 Save' : '💾 Kaydet'}
           </button>
         </div>
       </div>
@@ -239,7 +239,7 @@ export default function PredictPage() {
               onClick={() => setStage('playoffs')}
               className="btn-primary px-6 py-3"
             >
-              Play-off Seçimine Geç →
+              {locale === 'en' ? 'Playoff Selection →' : 'Play-off Seçimine Geç →'}
             </button>
           </div>
         </div>
@@ -296,7 +296,7 @@ export default function PredictPage() {
               <button onClick={() => setStage('groups')} className="btn-secondary px-6 py-3">← Geri</button>
               <button onClick={() => setStage('roundOf32')} disabled={playoffPicks.length !== 8}
                 className="btn-primary px-6 py-3" style={{ opacity: playoffPicks.length !== 8 ? 0.4 : 1 }}>
-                Son 32'ye Geç →
+                {locale === 'en' ? 'Round of 32 →' : "Son 32'ye Geç →"}
               </button>
             </div>
           </div>
@@ -312,7 +312,7 @@ export default function PredictPage() {
           onSelect={(matchId, winner) => updateKnockout('roundOf32', matchId, winner)}
           onNext={() => setStage('roundOf16')}
           onPrev={() => setStage('groups')}
-          nextLabel="Son 16'ya Geç →"
+          {...(locale === 'en' ? {nextLabel: 'Round of 16 →'} : {nextLabel: "Son 16'ya Geç →"})}
         />
       )}
 
@@ -325,7 +325,7 @@ export default function PredictPage() {
           onSelect={(matchId, winner) => updateKnockout('roundOf16', matchId, winner)}
           onNext={() => setStage('quarterFinals')}
           onPrev={() => setStage('roundOf32')}
-          nextLabel="Çeyrek Finale Geç →"
+          {...(locale === 'en' ? {nextLabel: 'Quarter Finals →'} : {nextLabel: 'Çeyrek Finale Geç →'})}
         />
       )}
 
@@ -338,7 +338,7 @@ export default function PredictPage() {
           onSelect={(matchId, winner) => updateKnockout('quarterFinals', matchId, winner)}
           onNext={() => setStage('semiFinals')}
           onPrev={() => setStage('roundOf16')}
-          nextLabel="Yarı Finale Geç →"
+          {...(locale === 'en' ? {nextLabel: 'Semi Finals →'} : {nextLabel: 'Yarı Finale Geç →'})}
         />
       )}
 
@@ -351,7 +351,7 @@ export default function PredictPage() {
           onSelect={(matchId, winner) => updateKnockout('semiFinals', matchId, winner)}
           onNext={() => setStage('final')}
           onPrev={() => setStage('quarterFinals')}
-          nextLabel="Finale Geç →"
+          {...(locale === 'en' ? {nextLabel: 'Final →'} : {nextLabel: 'Finale Geç →'})}
         />
       )}
 
@@ -442,7 +442,7 @@ export default function PredictPage() {
               ← Yarı Final
             </button>
             <button onClick={() => setStage('summary')} className="btn-primary px-6 py-3">
-              Özete Geç →
+              {locale === 'en' ? 'Summary →' : 'Özete Geç →'}
             </button>
           </div>
         </div>
@@ -460,7 +460,7 @@ export default function PredictPage() {
             <div className="card p-6 text-center"
               style={{ background: 'linear-gradient(135deg, rgba(201,168,76,0.1) 0%, #1A1A24 100%)', borderColor: 'rgba(201,168,76,0.3)' }}>
               <div className="text-xs uppercase tracking-widest mb-3 font-mono-custom" style={{ color: '#8A8A9A' }}>
-                🏆 Şampiyon Tahminin
+                {locale === 'en' ? '🏆 My Champion' : '🏆 Şampiyon Tahminin'}
               </div>
               {champion ? (
                 <div className="flex flex-col items-center gap-2">
@@ -469,7 +469,7 @@ export default function PredictPage() {
                   <div className="font-display text-3xl tracking-widest" style={{ color: '#C9A84C' }}>{champion.name}</div>
                 </div>
               ) : (
-                <p style={{ color: '#8A8A9A' }}>Henüz belirlenmedi</p>
+                <p style={{ color: '#8A8A9A' }}>{locale === 'en' ? 'Not selected yet' : 'Henüz belirlenmedi'}</p>
               )}
             </div>
 
@@ -491,7 +491,7 @@ export default function PredictPage() {
           {/* Group predictions summary */}
           <div className="card p-4 mb-6">
             <h3 className="font-display text-lg tracking-widest mb-3 uppercase" style={{ color: '#C9A84C' }}>
-              Grup Tahminleri
+              {locale === 'en' ? 'Group Predictions' : 'Grup Tahminleri'}
             </h3>
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
               {GROUPS.map(group => {
@@ -546,7 +546,7 @@ export default function PredictPage() {
           <div className="card p-6 max-w-sm w-full text-center">
             <div className="text-4xl mb-3">⚠️</div>
             <p className="font-semibold mb-1" style={{ color: '#F0F0F5' }}>{t('predict.reset_confirm')}</p>
-            <p className="text-sm mb-6" style={{ color: '#8A8A9A' }}>Bu işlem geri alınamaz.</p>
+            <p className="text-sm mb-6" style={{ color: '#8A8A9A' }}>{locale === 'en' ? 'This action cannot be undone.' : 'Bu işlem geri alınamaz.'}</p>
             <div className="flex gap-3">
               <button
                 onClick={() => setShowResetModal(false)}
@@ -622,7 +622,7 @@ function KnockoutStage({
 
       <div className="flex justify-between">
         <button onClick={onPrev} className="btn-secondary px-6 py-3">
-          ← Geri
+          {locale === 'en' ? '← Back' : '← Geri'}
         </button>
         <button onClick={onNext} className="btn-primary px-6 py-3">
           {nextLabel}
