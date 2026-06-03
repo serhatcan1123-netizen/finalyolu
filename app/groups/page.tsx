@@ -243,7 +243,7 @@ export default function GroupsPage() {
         <span>ℹ️</span>
         <p style={{ color: '#8A8A9A' }}>
           Grup sıralamaları henüz 0-0 gösteriliyor çünkü turnuva <strong style={{ color: '#C9A84C' }}>11 Haziran 2026</strong>'da başlıyor.
-          {locale === 'en' ? 'Real results will be updated here as matches are played.' : '{locale === 'en' ? 'Real results will be updated here as matches are played.' : 'Maçlar başladıkça gerçek sonuçlar burada güncellenecek.'}'}
+          {locale === 'en' ? 'Real results will be updated here as matches are played.' : 'Maçlar başladıkça gerçek sonuçlar burada güncellenecek.'}
         </p>
       </div>
     </div>

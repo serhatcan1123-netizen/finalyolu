@@ -139,7 +139,7 @@ export default function HomePage() {
           {/* Polymarket odds */}
           <div className="lg:col-span-2">
             <h2 className="font-display text-3xl md:text-4xl tracking-widest uppercase mb-6" style={{ color: '#F0F0F5' }}>
-              {locale === 'en' ? 'Championship Odds' : '{locale === 'en' ? 'Championship Odds' : 'Şampiyonluk Oranları'}'}
+              {locale === 'en' ? 'Championship Odds' : 'Şampiyonluk Oranları'}
             </h2>
             <PolymarketOdds />
           </div>
