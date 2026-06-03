@@ -134,7 +134,7 @@ export function KnockoutMatch({ matchId, homeSlug, awaySlug, winnerSlug, onSelec
 }
 
 // Derive Round of 32 matchups from group predictions
-export function getRoundOf32Matchups(groups: GroupPrediction[]): Array<{ home: string | null; away: string | null; matchId: string }> {
+export function getRoundOf32Matchups(groups: GroupPrediction[], playoffPicks: string[] = []): Array<{ home: string | null; away: string | null; matchId: string }> {
   const qualifiers: Record<string, string[]> = {};
   for (const grp of GROUPS) {
     const pred = groups.find(g => g.groupId === grp.id);
@@ -156,11 +156,11 @@ export function getRoundOf32Matchups(groups: GroupPrediction[]): Array<{ home: s
     { matchId: 'r32_10', home: qualifiers['J']?.[0] || null, away: qualifiers['I']?.[1] || null },
     { matchId: 'r32_11', home: qualifiers['K']?.[0] || null, away: qualifiers['L']?.[1] || null },
     { matchId: 'r32_12', home: qualifiers['L']?.[0] || null, away: qualifiers['K']?.[1] || null },
-    // 4 best 3rd-place slots — marked as unknown until group stage ends
-    { matchId: 'r32_13', home: null, away: null },
-    { matchId: 'r32_14', home: null, away: null },
-    { matchId: 'r32_15', home: null, away: null },
-    { matchId: 'r32_16', home: null, away: null },
+    // 4 best 3rd-place slots — filled by user playoff picks
+    { matchId: 'r32_13', home: playoffPicks[0] || null, away: playoffPicks[1] || null },
+    { matchId: 'r32_14', home: playoffPicks[2] || null, away: playoffPicks[3] || null },
+    { matchId: 'r32_15', home: playoffPicks[4] || null, away: playoffPicks[5] || null },
+    { matchId: 'r32_16', home: playoffPicks[6] || null, away: playoffPicks[7] || null },
   ];
 }
 

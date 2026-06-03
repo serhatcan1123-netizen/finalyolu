@@ -18,6 +18,7 @@ import AdBanner from '@/components/layout/AdBanner';
 
 const STAGES = [
   'groups',
+  'playoffs',
   'roundOf32',
   'roundOf16',
   'quarterFinals',
@@ -29,6 +30,7 @@ type Stage = (typeof STAGES)[number];
 
 const STAGE_LABELS: Record<Stage, string> = {
   groups: 'Grup Aşaması',
+  playoffs: 'Play-off',
   roundOf32: 'Son 32',
   roundOf16: 'Son 16',
   quarterFinals: 'Çeyrek Final',
@@ -39,6 +41,7 @@ const STAGE_LABELS: Record<Stage, string> = {
 
 const STAGE_ICONS: Record<Stage, string> = {
   groups: '⚽',
+  playoffs: '3.',
   roundOf32: '32',
   roundOf16: '16',
   quarterFinals: '8',
@@ -67,6 +70,7 @@ export default function PredictPage() {
   const [showResetModal, setShowResetModal] = useState(false);
   const [showShareCard, setShowShareCard] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [playoffPicks, setPlayoffPicks] = useState<string[]>([]);
 
   useEffect(() => {
     setPrediction(loadPrediction());
@@ -103,7 +107,7 @@ export default function PredictPage() {
   const stageIndex = STAGES.indexOf(stage);
 
   // Derived matchups
-  const r32Matchups = getRoundOf32Matchups(prediction.groups);
+  const r32Matchups = getRoundOf32Matchups(prediction.groups, playoffPicks);
   const r16Matchups = buildNextRound(
     r32Matchups.slice(0, 16),
     prediction.roundOf32,
@@ -232,14 +236,72 @@ export default function PredictPage() {
           <div className="flex justify-between mt-6">
             <div />
             <button
-              onClick={() => setStage('roundOf32')}
+              onClick={() => setStage('playoffs')}
               className="btn-primary px-6 py-3"
             >
-              Son 32'ye Geç →
+              Play-off Seçimine Geç →
             </button>
           </div>
         </div>
       )}
+
+
+      {stage === 'playoffs' && (() => {
+        const thirdPlaceTeams = GROUPS.map(grp => {
+          const pred = prediction.groups.find(g => g.groupId === grp.id);
+          const order = pred?.teamOrder || grp.teams.map(t => t.slug);
+          return { slug: order[2] || null, groupId: grp.id };
+        }).filter(x => x.slug) as { slug: string; groupId: string }[];
+
+        const toggle = (slug: string) => {
+          setPlayoffPicks(prev =>
+            prev.includes(slug) ? prev.filter(s => s !== slug) : prev.length < 8 ? [...prev, slug] : prev
+          );
+        };
+
+        return (
+          <div>
+            <div className="flex items-center justify-between mb-2">
+              <h2 className="font-display text-2xl tracking-widest uppercase" style={{ color: '#C9A84C' }}>
+                PLAY-OFF SEÇİMİ
+              </h2>
+              <span className="text-sm font-mono-custom" style={{ color: playoffPicks.length === 8 ? '#C9A84C' : '#8A8A9A' }}>
+                {playoffPicks.length} / 8 seçildi
+              </span>
+            </div>
+            <p className="text-sm mb-6" style={{ color: '#8A8A9A' }}>
+              12 grubun 3. sıralarından Son 32'ye geçecek 8 takımı seç.
+            </p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3 mb-6">
+              {thirdPlaceTeams.map(({ slug, groupId }) => {
+                const team = Object.values(TEAMS).find(t => t.slug === slug);
+                if (!team) return null;
+                const selected = playoffPicks.includes(slug);
+                const disabled = !selected && playoffPicks.length >= 8;
+                return (
+                  <button key={slug} onClick={() => toggle(slug)} disabled={disabled}
+                    className="flex items-center gap-2 p-3 rounded-xl border transition-all text-left"
+                    style={{ background: selected ? 'rgba(201,168,76,0.15)' : 'rgba(26,26,36,0.8)', borderColor: selected ? '#C9A84C' : '#2A2A3A', opacity: disabled ? 0.35 : 1, cursor: disabled ? 'not-allowed' : 'pointer' }}>
+                    <img src={team.flag} alt="" style={{ width: '28px', height: '19px', borderRadius: '3px', objectFit: 'cover', flexShrink: 0 }} />
+                    <div>
+                      <div className="text-xs font-semibold" style={{ color: selected ? '#C9A84C' : '#F0F0F5' }}>{team.name}</div>
+                      <div className="text-xs font-mono-custom" style={{ color: '#8A8A9A' }}>Grup {groupId}</div>
+                    </div>
+                    {selected && <span className="ml-auto text-xs" style={{ color: '#C9A84C' }}>✓</span>}
+                  </button>
+                );
+              })}
+            </div>
+            <div className="flex justify-between">
+              <button onClick={() => setStage('groups')} className="btn-secondary px-6 py-3">← Geri</button>
+              <button onClick={() => setStage('roundOf32')} disabled={playoffPicks.length !== 8}
+                className="btn-primary px-6 py-3" style={{ opacity: playoffPicks.length !== 8 ? 0.4 : 1 }}>
+                Son 32'ye Geç →
+              </button>
+            </div>
+          </div>
+        );
+      })()}
 
       {/* ===== ROUND OF 32 ===== */}
       {stage === 'roundOf32' && (
