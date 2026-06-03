@@ -27,7 +27,7 @@ export default function TeamDetailPage() {
       <div className="max-w-5xl mx-auto px-4 py-20 text-center">
         <div className="text-5xl mb-4">⚠️</div>
         <p className="font-semibold text-lg mb-4" style={{ color: '#F0F0F5' }}>Takım bulunamadı</p>
-        <Link href="/teams" className="btn-secondary inline-flex">{locale === 'en' ? '← All Teams' : '← Tüm Takımlar'}</Link>
+        <Link href="/teams" className="btn-secondary inline-flex">← Tüm Takımlar</Link>
       </div>
     );
   }
@@ -51,7 +51,7 @@ export default function TeamDetailPage() {
         className="inline-flex items-center gap-2 text-sm mb-6 transition-colors hover:text-white"
         style={{ color: '#8A8A9A' }}
       >
-        {locale === 'en' ? '← All Teams' : '← Tüm Takımlar'}
+        ← Tüm Takımlar
       </Link>
 
       {/* Hero header */}
