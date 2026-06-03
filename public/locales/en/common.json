@@ -60,7 +60,8 @@
     "reset_no": "Cancel",
     "prediction_saved": "Your predictions have been saved!",
     "champion_label": "Your Champion Pick",
-    "third_place": "Third Place Match"
+    "third_place": "Third Place Match",
+    "stage_playoffs": "Playoff"
   },
   "share": {
     "tweet_text": "My 2026 World Cup predictions are {percentage}% accurate! Make yours too:",

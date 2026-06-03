@@ -60,7 +60,8 @@
     "reset_no": "İptal",
     "prediction_saved": "Tahminleriniz kaydedildi!",
     "champion_label": "Şampiyon Tahminin",
-    "third_place": "Üçüncülük Maçı"
+    "third_place": "Üçüncülük Maçı",
+    "stage_playoffs": "Play-off"
   },
   "share": {
     "tweet_text": "2026 Dünya Kupası tahminlerim %{percentage} doğru çıktı! Sen de tahminini yap:",

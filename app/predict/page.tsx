@@ -28,16 +28,18 @@ const STAGES = [
 ] as const;
 type Stage = (typeof STAGES)[number];
 
-const STAGE_LABELS: Record<Stage, string> = {
-  groups: 'Grup Aşaması',
-  playoffs: 'Play-off',
-  roundOf32: 'Son 32',
-  roundOf16: 'Son 16',
-  quarterFinals: 'Çeyrek Final',
-  semiFinals: 'Yarı Final',
-  final: 'Final',
-  summary: 'Özet',
-};
+function getStageLabels(t: (key: string) => string): Record<Stage, string> {
+  return {
+    groups: t('predict.stage_groups'),
+    playoffs: t('predict.stage_playoffs'),
+    roundOf32: t('predict.stage_r32'),
+    roundOf16: t('predict.stage_r16'),
+    quarterFinals: t('predict.stage_qf'),
+    semiFinals: t('predict.stage_sf'),
+    final: t('predict.stage_final'),
+    summary: t('predict.stage_summary'),
+  };
+}
 
 const STAGE_ICONS: Record<Stage, string> = {
   groups: '⚽',
@@ -104,6 +106,7 @@ export default function PredictPage() {
     setShowResetModal(false);
   }
 
+  const STAGE_LABELS = getStageLabels(t);
   const stageIndex = STAGES.indexOf(stage);
 
   // Derived matchups
