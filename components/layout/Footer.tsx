@@ -78,8 +78,6 @@ export default function Footer() {
         <div className="border-t border-border mt-8 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs" style={{ color: '#8A8A9A' }}>{t('footer.copyright')}</p>
           <p className="text-xs" style={{ color: '#8A8A9A' }}>
-            Powered by{' '}
-            <span style={{ color: '#C9A84C' }}>api-football.com</span>
           </p>
         </div>
       </div>
