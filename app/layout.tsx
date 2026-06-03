@@ -9,6 +9,14 @@ export const metadata: Metadata = {
   title: 'Finalyolu — 2026 Dünya Kupası Fikstürler, Maçlar, Tahmin',
   description: '2026 Dünya Kupası maç programı TSİ saatiyle, grup tabloları, takım kadroları ve interaktif turnuva tahmini. 48 takım, 104 maç.',
   keywords: 'Dünya Kupası 2026, maçlar, gruplar, tahmin, futbol, TSİ',
+  icons: {
+    icon: [
+      { url: '/favicon.ico' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' },
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+    ],
+    apple: '/apple-touch-icon.png',
+  },
   openGraph: {
     title: 'Finalyolu — 2026 Dünya Kupası',
     description: 'Tüm turnuvayı tahmin et, skorunu arkadaşlarınla paylaş!',
