@@ -13,10 +13,11 @@ function formatMatchDate(dateStr: string) {
   return d.toLocaleDateString('tr-TR', { day: 'numeric', month: 'short' });
 }
 
-function GroupCard({ group, expanded, onToggle }: {
+function GroupCard({ group, expanded, onToggle, locale }: {
   group: Group;
   expanded: boolean;
   onToggle: () => void;
+  locale: string;
 }) {
   const groupMatches = GROUP_MATCHES.filter(m => m.group === group.id);
 
@@ -229,6 +230,7 @@ export default function GroupsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
         {GROUPS.map(group => (
           <GroupCard
+          locale={locale}
             key={group.id}
             group={group}
             expanded={expandedGroup === group.id}
