@@ -173,9 +173,9 @@ export const GROUP_MATCHES: Match[] = [
 
   // GROUP D
   { id: 19, homeTeam: TEAMS.usa,          awayTeam: TEAMS.paraguay,     date: '2026-06-12', timeET: '21:00', venue: 'SoFi Stadium',            city: 'Los Angeles',     group: 'D', round: 'Group Stage', status: 'NS' },
-  { id: 20, homeTeam: TEAMS.australia,    awayTeam: TEAMS.turkey,       date: '2026-06-14', timeET: '00:00', venue: 'BC Place',                city: 'Vancouver',       group: 'D', round: 'Group Stage', status: 'NS' },
+  { id: 20, homeTeam: TEAMS.australia,    awayTeam: TEAMS.turkey,       date: '2026-06-13', timeET: '00:00', venue: 'BC Place',                city: 'Vancouver',       group: 'D', round: 'Group Stage', status: 'NS' },
   { id: 21, homeTeam: TEAMS.usa,          awayTeam: TEAMS.australia,    date: '2026-06-19', timeET: '15:00', venue: 'Lumen Field',             city: 'Seattle',         group: 'D', round: 'Group Stage', status: 'NS' },
-  { id: 22, homeTeam: TEAMS.turkey,       awayTeam: TEAMS.paraguay,     date: '2026-06-20', timeET: '00:00', venue: "Levi's Stadium",          city: 'San Francisco',   group: 'D', round: 'Group Stage', status: 'NS' },
+  { id: 22, homeTeam: TEAMS.turkey,       awayTeam: TEAMS.paraguay,     date: '2026-06-19', timeET: '00:00', venue: "Levi's Stadium",          city: 'San Francisco',   group: 'D', round: 'Group Stage', status: 'NS' },
   { id: 23, homeTeam: TEAMS.turkey,       awayTeam: TEAMS.usa,          date: '2026-06-25', timeET: '22:00', venue: 'SoFi Stadium',            city: 'Los Angeles',     group: 'D', round: 'Group Stage', status: 'NS' },
   { id: 24, homeTeam: TEAMS.paraguay,     awayTeam: TEAMS.australia,    date: '2026-06-25', timeET: '22:00', venue: "Levi's Stadium",          city: 'San Francisco',   group: 'D', round: 'Group Stage', status: 'NS' },
 
