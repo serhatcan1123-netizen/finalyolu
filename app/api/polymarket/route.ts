@@ -1,12 +1,12 @@
 import { NextResponse } from 'next/server';
 
-export const revalidate = 300;
+export const revalidate = 30;
 
 export async function GET() {
   try {
     const res = await fetch(
       'https://gamma-api.polymarket.com/events?slug=world-cup-winner&limit=1',
-      { next: { revalidate: 300 } }
+      { next: { revalidate: 30 } }
     );
     const data = await res.json();
     const markets = data[0]?.markets || [];
