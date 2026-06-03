@@ -60,10 +60,10 @@ export default function ShareCard({ prediction, score, onClose }: ShareCardProps
   }
 
   const groupSummary = prediction.groups
-    ? Object.entries(prediction.groups).slice(0, 12).map(([gId, gPred]) => {
+    ? prediction.groups.slice(0, 12).map((gPred) => {
         const slugs = gPred.teamOrder.slice(0, 2);
         const teams = slugs.map(s => Object.values(TEAMS).find(tm => tm.slug === s)).filter(Boolean) as (typeof TEAMS)[string][];
-        return { groupId: gId, teams };
+        return { groupId: gPred.groupId, teams };
       })
     : [];
 
