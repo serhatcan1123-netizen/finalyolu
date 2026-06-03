@@ -112,7 +112,7 @@ export default function TeamDetailPage() {
               {oddsEntry && (
                 <div>
                   <div className="font-display text-2xl leading-none" style={{ color: '#C9A84C' }}>{oddsEntry.probability}%</div>
-                  <div className="text-xs font-mono-custom" style={{ color: '#8A8A9A' }}>{locale === 'en' ? 'Championship (Polymarket)' : '{locale === 'en' ? 'Championship (Polymarket)' : 'Şampiyonluk (Polymarket)'}'}</div>
+                  <div className="text-xs font-mono-custom" style={{ color: '#8A8A9A' }}>{locale === 'en' ? 'Championship (Polymarket)' : 'Şampiyonluk (Polymarket)'}</div>
                 </div>
               )}
               {squad.length > 0 && (
