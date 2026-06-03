@@ -6,7 +6,7 @@ import Footer from '@/components/layout/Footer';
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://finalyolu.com'),
-  title: 'Finalyolu — 2026 Dünya Kupası Maçlar, Gruplar, Tahmin',
+  title: 'Finalyolu — 2026 Dünya Kupası Fikstürler, Maçlar, Tahmin',
   description: '2026 Dünya Kupası maç programı TSİ saatiyle, grup tabloları, takım kadroları ve interaktif turnuva tahmini. 48 takım, 104 maç.',
   keywords: 'Dünya Kupası 2026, maçlar, gruplar, tahmin, futbol, TSİ',
   openGraph: {
