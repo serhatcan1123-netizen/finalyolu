@@ -191,7 +191,7 @@ export const GROUP_MATCHES: Match[] = [
   { id: 31, homeTeam: TEAMS.netherlands,  awayTeam: TEAMS.japan,        date: '2026-06-14', timeET: '16:00', venue: 'AT&T Stadium',            city: 'Dallas',          group: 'F', round: 'Group Stage', status: 'NS' },
   { id: 32, homeTeam: TEAMS.sweden,       awayTeam: TEAMS.tunisia,      date: '2026-06-14', timeET: '22:00', venue: 'Estadio BBVA',            city: 'Monterrey',       group: 'F', round: 'Group Stage', status: 'NS' },
   { id: 33, homeTeam: TEAMS.netherlands,  awayTeam: TEAMS.sweden,       date: '2026-06-20', timeET: '13:00', venue: 'NRG Stadium',             city: 'Houston',         group: 'F', round: 'Group Stage', status: 'NS' },
-  { id: 34, homeTeam: TEAMS.tunisia,      awayTeam: TEAMS.japan,        date: '2026-06-21', timeET: '00:00', venue: 'Estadio BBVA',            city: 'Monterrey',       group: 'F', round: 'Group Stage', status: 'NS' },
+  { id: 34, homeTeam: TEAMS.tunisia,      awayTeam: TEAMS.japan,        date: '2026-06-20', timeET: '00:00', venue: 'Estadio BBVA',            city: 'Monterrey',       group: 'F', round: 'Group Stage', status: 'NS' },
   { id: 35, homeTeam: TEAMS.japan,        awayTeam: TEAMS.sweden,       date: '2026-06-25', timeET: '19:00', venue: 'AT&T Stadium',            city: 'Dallas',          group: 'F', round: 'Group Stage', status: 'NS' },
   { id: 36, homeTeam: TEAMS.tunisia,      awayTeam: TEAMS.netherlands,  date: '2026-06-25', timeET: '19:00', venue: 'Arrowhead Stadium',       city: 'Kansas City',     group: 'F', round: 'Group Stage', status: 'NS' },
 
