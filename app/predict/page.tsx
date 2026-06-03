@@ -1,0 +1,571 @@
+'use client';
+
+import { useState, useEffect, useCallback } from 'react';
+import Image from 'next/image';
+import { useI18n } from '@/lib/i18n';
+import { GROUPS, TEAMS } from '@/lib/api/mock-data';
+import {
+  getEmptyPrediction,
+  type TournamentPrediction,
+  type GroupPrediction,
+  type KnockoutPrediction,
+} from '@/lib/prediction/algorithm';
+import { loadPrediction, savePrediction, resetPrediction } from '@/lib/prediction/storage';
+import GroupPredictor from '@/components/predict/GroupPredictor';
+import { KnockoutMatch, getRoundOf32Matchups, buildNextRound } from '@/components/predict/KnockoutBracket';
+import ShareCard from '@/components/predict/ShareCard';
+import AdBanner from '@/components/layout/AdBanner';
+
+const STAGES = [
+  'groups',
+  'roundOf32',
+  'roundOf16',
+  'quarterFinals',
+  'semiFinals',
+  'final',
+  'summary',
+] as const;
+type Stage = (typeof STAGES)[number];
+
+const STAGE_LABELS: Record<Stage, string> = {
+  groups: 'Grup Aşaması',
+  roundOf32: 'Son 32',
+  roundOf16: 'Son 16',
+  quarterFinals: 'Çeyrek Final',
+  semiFinals: 'Yarı Final',
+  final: 'Final',
+  summary: 'Özet',
+};
+
+const STAGE_ICONS: Record<Stage, string> = {
+  groups: '⚽',
+  roundOf32: '32',
+  roundOf16: '16',
+  quarterFinals: '8',
+  semiFinals: '4',
+  final: '🏆',
+  summary: '✓',
+};
+
+function ProgressBar({ current, total }: { current: number; total: number }) {
+  const pct = (current / total) * 100;
+  return (
+    <div className="h-1.5 rounded-full overflow-hidden" style={{ background: '#2A2A3A' }}>
+      <div
+        className="h-full rounded-full transition-all duration-500"
+        style={{ width: `${pct}%`, background: 'linear-gradient(90deg, #C9A84C, #E8C96A)' }}
+      />
+    </div>
+  );
+}
+
+export default function PredictPage() {
+  const { t } = useI18n();
+  const [stage, setStage] = useState<Stage>('groups');
+  const [groupPage, setGroupPage] = useState(0);
+  const [prediction, setPrediction] = useState<TournamentPrediction>(getEmptyPrediction);
+  const [showResetModal, setShowResetModal] = useState(false);
+  const [showShareCard, setShowShareCard] = useState(false);
+  const [saved, setSaved] = useState(false);
+
+  useEffect(() => {
+    setPrediction(loadPrediction());
+  }, []);
+
+  function updateGroupPrediction(groupPred: GroupPrediction) {
+    setPrediction(prev => {
+      const groups = prev.groups.filter(g => g.groupId !== groupPred.groupId);
+      return { ...prev, groups: [...groups, groupPred] };
+    });
+  }
+
+  function updateKnockout(stageKey: keyof Pick<TournamentPrediction, 'roundOf32' | 'roundOf16' | 'quarterFinals' | 'semiFinals' | 'thirdPlace' | 'final'>, matchId: string, winner: string) {
+    setPrediction(prev => ({
+      ...prev,
+      [stageKey]: { ...prev[stageKey], [matchId]: winner },
+    }));
+  }
+
+  function handleSave() {
+    savePrediction(prediction);
+    setSaved(true);
+    setTimeout(() => setSaved(false), 3000);
+  }
+
+  function handleReset() {
+    resetPrediction();
+    setPrediction(getEmptyPrediction());
+    setStage('groups');
+    setGroupPage(0);
+    setShowResetModal(false);
+  }
+
+  const stageIndex = STAGES.indexOf(stage);
+
+  // Derived matchups
+  const r32Matchups = getRoundOf32Matchups(prediction.groups);
+  const r16Matchups = buildNextRound(
+    r32Matchups.slice(0, 16),
+    prediction.roundOf32,
+    'r16'
+  );
+  const qfMatchups = buildNextRound(r16Matchups, prediction.roundOf16, 'qf');
+  const sfMatchups = buildNextRound(qfMatchups, prediction.quarterFinals, 'sf');
+  const finalMatchups = buildNextRound(sfMatchups, prediction.semiFinals, 'final');
+
+  // Auto-set champion from final winner
+  useEffect(() => {
+    const finalWinner = finalMatchups[0] && prediction.final[finalMatchups[0].matchId];
+    if (finalWinner && finalWinner !== prediction.champion) {
+      setPrediction(prev => ({ ...prev, champion: finalWinner }));
+    }
+  }, [prediction.final]);
+
+  const champion = prediction.champion ? Object.values(TEAMS).find(t => t.slug === prediction.champion) : null;
+
+  return (
+    <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      {/* Header */}
+      <div className="flex items-start justify-between mb-6 flex-wrap gap-4">
+        <div>
+          <h1 className="font-display text-4xl md:text-5xl tracking-widest uppercase" style={{ color: '#F0F0F5' }}>
+            {t('predict.title')}
+          </h1>
+          <p className="text-sm mt-1" style={{ color: '#8A8A9A' }}>
+            Tüm turnuvayı tahmin et · Skorunu kazan · Arkadaşlarınla paylaş
+          </p>
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => setShowResetModal(true)}
+            className="text-sm px-4 py-2 rounded-lg border transition-all"
+            style={{ color: '#E63946', borderColor: 'rgba(230,57,70,0.3)', background: 'transparent' }}
+          >
+            🗑 Sıfırla
+          </button>
+          <button onClick={handleSave} className="btn-primary text-sm px-4 py-2 rounded-lg">
+            {saved ? '✓ Kaydedildi!' : '💾 Kaydet'}
+          </button>
+        </div>
+      </div>
+
+      {/* Stage tabs */}
+      <div className="overflow-x-auto scrollbar-hide mb-6 -mx-4 px-4">
+        <div className="flex gap-1" style={{ minWidth: 'max-content' }}>
+          {STAGES.map((s, i) => (
+            <button
+              key={s}
+              onClick={() => { if (i <= stageIndex + 1) setStage(s); }}
+              className="flex flex-col items-center px-3 py-2 rounded-lg border transition-all text-xs min-w-[60px]"
+              style={{
+                background: stage === s ? '#C9A84C' : i <= stageIndex ? 'rgba(201,168,76,0.1)' : 'transparent',
+                color: stage === s ? '#0A0A0F' : i <= stageIndex ? '#C9A84C' : '#8A8A9A',
+                borderColor: stage === s ? '#C9A84C' : i <= stageIndex ? 'rgba(201,168,76,0.3)' : '#2A2A3A',
+                fontWeight: stage === s ? 700 : 400,
+              }}
+            >
+              <span className="text-base">{STAGE_ICONS[s]}</span>
+              <span className="mt-0.5 font-mono-custom" style={{ fontSize: '0.6rem' }}>{STAGE_LABELS[s]}</span>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      {/* Progress bar */}
+      <div className="mb-8">
+        <ProgressBar current={stageIndex} total={STAGES.length - 1} />
+      </div>
+
+      {/* ===== GROUP STAGE ===== */}
+      {stage === 'groups' && (
+        <div>
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-display text-2xl tracking-widest uppercase" style={{ color: '#C9A84C' }}>
+              GRUP {GROUPS[groupPage].id} · {groupPage + 1} / {GROUPS.length}
+            </h2>
+            <div className="flex gap-2">
+              <button
+                onClick={() => setGroupPage(p => Math.max(0, p - 1))}
+                disabled={groupPage === 0}
+                className="px-3 py-1.5 rounded-lg border text-sm transition-all disabled:opacity-30"
+                style={{ borderColor: '#2A2A3A', color: '#8A8A9A' }}
+              >
+                ←
+              </button>
+              <button
+                onClick={() => setGroupPage(p => Math.min(GROUPS.length - 1, p + 1))}
+                disabled={groupPage === GROUPS.length - 1}
+                className="px-3 py-1.5 rounded-lg border text-sm transition-all disabled:opacity-30"
+                style={{ borderColor: '#2A2A3A', color: '#8A8A9A' }}
+              >
+                →
+              </button>
+            </div>
+          </div>
+
+          <GroupPredictor
+            groupIndex={groupPage}
+            prediction={prediction.groups.find(g => g.groupId === GROUPS[groupPage].id)}
+            onChange={updateGroupPrediction}
+          />
+
+          {/* Group dots navigation */}
+          <div className="flex gap-1.5 justify-center mt-4 flex-wrap">
+            {GROUPS.map((g, i) => {
+              const hasPred = prediction.groups.some(p => p.groupId === g.id);
+              return (
+                <button
+                  key={g.id}
+                  onClick={() => setGroupPage(i)}
+                  className="w-6 h-6 rounded-full text-xs font-mono-custom transition-all"
+                  style={{
+                    background: i === groupPage ? '#C9A84C' : hasPred ? 'rgba(201,168,76,0.3)' : '#2A2A3A',
+                    color: i === groupPage ? '#0A0A0F' : '#F0F0F5',
+                  }}
+                >
+                  {g.id}
+                </button>
+              );
+            })}
+          </div>
+
+          <div className="flex justify-between mt-6">
+            <div />
+            <button
+              onClick={() => setStage('roundOf32')}
+              className="btn-primary px-6 py-3"
+            >
+              Son 32'ye Geç →
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ===== ROUND OF 32 ===== */}
+      {stage === 'roundOf32' && (
+        <KnockoutStage
+          title="SON 32"
+          matchups={r32Matchups}
+          results={prediction.roundOf32}
+          onSelect={(matchId, winner) => updateKnockout('roundOf32', matchId, winner)}
+          onNext={() => setStage('roundOf16')}
+          onPrev={() => setStage('groups')}
+          nextLabel="Son 16'ya Geç →"
+        />
+      )}
+
+      {/* ===== ROUND OF 16 ===== */}
+      {stage === 'roundOf16' && (
+        <KnockoutStage
+          title="SON 16"
+          matchups={r16Matchups}
+          results={prediction.roundOf16}
+          onSelect={(matchId, winner) => updateKnockout('roundOf16', matchId, winner)}
+          onNext={() => setStage('quarterFinals')}
+          onPrev={() => setStage('roundOf32')}
+          nextLabel="Çeyrek Finale Geç →"
+        />
+      )}
+
+      {/* ===== QUARTER FINALS ===== */}
+      {stage === 'quarterFinals' && (
+        <KnockoutStage
+          title="ÇEYREK FİNAL"
+          matchups={qfMatchups}
+          results={prediction.quarterFinals}
+          onSelect={(matchId, winner) => updateKnockout('quarterFinals', matchId, winner)}
+          onNext={() => setStage('semiFinals')}
+          onPrev={() => setStage('roundOf16')}
+          nextLabel="Yarı Finale Geç →"
+        />
+      )}
+
+      {/* ===== SEMI FINALS ===== */}
+      {stage === 'semiFinals' && (
+        <KnockoutStage
+          title="YARI FİNAL"
+          matchups={sfMatchups}
+          results={prediction.semiFinals}
+          onSelect={(matchId, winner) => updateKnockout('semiFinals', matchId, winner)}
+          onNext={() => setStage('final')}
+          onPrev={() => setStage('quarterFinals')}
+          nextLabel="Finale Geç →"
+        />
+      )}
+
+      {/* ===== FINAL ===== */}
+      {stage === 'final' && (
+        <div>
+          <h2 className="font-display text-3xl tracking-widest uppercase mb-6" style={{ color: '#C9A84C' }}>
+            🏆 FİNAL
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            {/* Final match */}
+            <div>
+              <h3 className="text-sm font-semibold mb-3 uppercase tracking-widest" style={{ color: '#8A8A9A' }}>Final Maçı</h3>
+              {finalMatchups.length > 0 && (
+                <KnockoutMatch
+                  matchId={finalMatchups[0].matchId}
+                  homeSlug={finalMatchups[0].home}
+                  awaySlug={finalMatchups[0].away}
+                  winnerSlug={prediction.final[finalMatchups[0].matchId] || null}
+                  onSelectWinner={(matchId, winner) => updateKnockout('final', matchId, winner)}
+                />
+              )}
+            </div>
+
+            {/* 3rd place */}
+            <div>
+              <h3 className="text-sm font-semibold mb-3 uppercase tracking-widest" style={{ color: '#8A8A9A' }}>
+                Üçüncülük Maçı
+              </h3>
+              {sfMatchups.length >= 2 && (
+                <KnockoutMatch
+                  matchId="3rd_place"
+                  homeSlug={prediction.semiFinals[sfMatchups[0]?.matchId] ? (
+                    sfMatchups[0].home === prediction.semiFinals[sfMatchups[0].matchId] ? sfMatchups[0].away : sfMatchups[0].home
+                  ) : null}
+                  awaySlug={prediction.semiFinals[sfMatchups[1]?.matchId] ? (
+                    sfMatchups[1].home === prediction.semiFinals[sfMatchups[1].matchId] ? sfMatchups[1].away : sfMatchups[1].home
+                  ) : null}
+                  winnerSlug={prediction.thirdPlace['3rd_place'] || null}
+                  onSelectWinner={(matchId, winner) => updateKnockout('thirdPlace', matchId, winner)}
+                />
+              )}
+            </div>
+          </div>
+
+          {/* Awards */}
+          <div className="card p-6 mb-6">
+            <h3 className="font-display text-xl tracking-widest mb-4" style={{ color: '#C9A84C' }}>
+              ÖDÜLLER
+            </h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="text-xs uppercase tracking-widest mb-2 block font-mono-custom" style={{ color: '#8A8A9A' }}>
+                  👟 {t('predict.top_scorer_label')}
+                </label>
+                <input
+                  type="text"
+                  placeholder={t('predict.top_scorer_placeholder')}
+                  value={prediction.topScorer}
+                  onChange={e => setPrediction(prev => ({ ...prev, topScorer: e.target.value }))}
+                  className="w-full px-4 py-2.5 rounded-lg text-sm outline-none"
+                  style={{ background: '#111118', border: '1px solid #2A2A3A', color: '#F0F0F5' }}
+                  onFocus={e => { e.target.style.borderColor = '#C9A84C'; }}
+                  onBlur={e => { e.target.style.borderColor = '#2A2A3A'; }}
+                />
+              </div>
+              <div>
+                <label className="text-xs uppercase tracking-widest mb-2 block font-mono-custom" style={{ color: '#8A8A9A' }}>
+                  🧤 {t('predict.golden_glove_label')}
+                </label>
+                <input
+                  type="text"
+                  placeholder={t('predict.golden_glove_placeholder')}
+                  value={prediction.goldenGlove}
+                  onChange={e => setPrediction(prev => ({ ...prev, goldenGlove: e.target.value }))}
+                  className="w-full px-4 py-2.5 rounded-lg text-sm outline-none"
+                  style={{ background: '#111118', border: '1px solid #2A2A3A', color: '#F0F0F5' }}
+                  onFocus={e => { e.target.style.borderColor = '#C9A84C'; }}
+                  onBlur={e => { e.target.style.borderColor = '#2A2A3A'; }}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="flex justify-between">
+            <button onClick={() => setStage('semiFinals')} className="btn-secondary px-6 py-3">
+              ← Yarı Final
+            </button>
+            <button onClick={() => setStage('summary')} className="btn-primary px-6 py-3">
+              Özete Geç →
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* ===== SUMMARY ===== */}
+      {stage === 'summary' && (
+        <div>
+          <h2 className="font-display text-3xl tracking-widest uppercase mb-6" style={{ color: '#C9A84C' }}>
+            TAHMİN ÖZETİ
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+            {/* Champion */}
+            <div className="card p-6 text-center"
+              style={{ background: 'linear-gradient(135deg, rgba(201,168,76,0.1) 0%, #1A1A24 100%)', borderColor: 'rgba(201,168,76,0.3)' }}>
+              <div className="text-xs uppercase tracking-widest mb-3 font-mono-custom" style={{ color: '#8A8A9A' }}>
+                🏆 Şampiyon Tahminin
+              </div>
+              {champion ? (
+                <div className="flex flex-col items-center gap-2">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={champion.flag} alt={champion.nameEn} style={{ width: '64px', height: '44px', borderRadius: '6px', objectFit: 'cover' }} />
+                  <div className="font-display text-3xl tracking-widest" style={{ color: '#C9A84C' }}>{champion.name}</div>
+                </div>
+              ) : (
+                <p style={{ color: '#8A8A9A' }}>Henüz belirlenmedi</p>
+              )}
+            </div>
+
+            {/* Awards */}
+            <div className="card p-6">
+              <div className="space-y-3">
+                <div>
+                  <div className="text-xs uppercase tracking-widest font-mono-custom mb-1" style={{ color: '#8A8A9A' }}>👟 Altın Ayakkabı</div>
+                  <div className="font-semibold" style={{ color: '#F0F0F5' }}>{prediction.topScorer || '—'}</div>
+                </div>
+                <div>
+                  <div className="text-xs uppercase tracking-widest font-mono-custom mb-1" style={{ color: '#8A8A9A' }}>🧤 Altın Eldiven</div>
+                  <div className="font-semibold" style={{ color: '#F0F0F5' }}>{prediction.goldenGlove || '—'}</div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Group predictions summary */}
+          <div className="card p-4 mb-6">
+            <h3 className="font-display text-lg tracking-widest mb-3 uppercase" style={{ color: '#C9A84C' }}>
+              Grup Tahminleri
+            </h3>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
+              {GROUPS.map(group => {
+                const pred = prediction.groups.find(g => g.groupId === group.id);
+                const order = pred?.teamOrder || group.teams.map(t => t.slug);
+                return (
+                  <div key={group.id} className="text-sm">
+                    <div className="font-display text-base mb-1" style={{ color: '#C9A84C' }}>GRUP {group.id}</div>
+                    {order.slice(0, 2).map((slug, i) => {
+                      const team = Object.values(TEAMS).find(t => t.slug === slug);
+                      return (
+                        <div key={slug} className="flex items-center gap-1 text-xs" style={{ color: '#F0F0F5' }}>
+                          <span style={{ color: '#8A8A9A', width: '12px' }}>{i + 1}.</span>
+                          {team && (
+                            // eslint-disable-next-line @next/next/no-img-element
+                            <img src={team.flag} alt="" style={{ width: '16px', height: '11px', borderRadius: '2px' }} />
+                          )}
+                          <span className="truncate">{team?.name || slug}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <AdBanner slot="predict-summary" format="leaderboard" className="mb-6" />
+
+          <div className="flex gap-3 flex-wrap justify-between">
+            <button onClick={() => setStage('final')} className="btn-secondary px-6 py-3">
+              ← Final
+            </button>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowShareCard(true)}
+                className="btn-secondary px-6 py-3"
+              >
+                📤 {t('predict.share_result')}
+              </button>
+              <button onClick={handleSave} className="btn-primary px-8 py-3 font-display tracking-widest text-xl">
+                {saved ? '✓ KAYDEDİLDİ!' : t('predict.save_prediction')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Reset confirmation modal */}
+      {showResetModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4" style={{ background: 'rgba(0,0,0,0.7)' }}>
+          <div className="card p-6 max-w-sm w-full text-center">
+            <div className="text-4xl mb-3">⚠️</div>
+            <p className="font-semibold mb-1" style={{ color: '#F0F0F5' }}>{t('predict.reset_confirm')}</p>
+            <p className="text-sm mb-6" style={{ color: '#8A8A9A' }}>Bu işlem geri alınamaz.</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => setShowResetModal(false)}
+                className="flex-1 btn-secondary py-2.5"
+              >
+                {t('predict.reset_no')}
+              </button>
+              <button
+                onClick={handleReset}
+                className="flex-1 py-2.5 rounded-lg font-semibold transition-all"
+                style={{ background: '#E63946', color: 'white' }}
+              >
+                {t('predict.reset_yes')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Share card modal */}
+      {showShareCard && (
+        <ShareCard
+          prediction={prediction}
+          score={null}
+          onClose={() => setShowShareCard(false)}
+        />
+      )}
+    </div>
+  );
+}
+
+function KnockoutStage({
+  title,
+  matchups,
+  results,
+  onSelect,
+  onNext,
+  onPrev,
+  nextLabel,
+}: {
+  title: string;
+  matchups: Array<{ matchId: string; home: string | null; away: string | null }>;
+  results: KnockoutPrediction;
+  onSelect: (matchId: string, winner: string) => void;
+  onNext: () => void;
+  onPrev: () => void;
+  nextLabel: string;
+}) {
+  const completed = matchups.filter(m => results[m.matchId]).length;
+  return (
+    <div>
+      <div className="flex items-center justify-between mb-4">
+        <h2 className="font-display text-2xl md:text-3xl tracking-widest uppercase" style={{ color: '#C9A84C' }}>
+          {title}
+        </h2>
+        <span className="text-sm font-mono-custom" style={{ color: '#8A8A9A' }}>
+          {completed}/{matchups.length} seçildi
+        </span>
+      </div>
+
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-3 mb-6">
+        {matchups.map((m) => (
+          <KnockoutMatch
+            key={m.matchId}
+            matchId={m.matchId}
+            homeSlug={m.home}
+            awaySlug={m.away}
+            winnerSlug={results[m.matchId] || null}
+            onSelectWinner={onSelect}
+          />
+        ))}
+      </div>
+
+      <div className="flex justify-between">
+        <button onClick={onPrev} className="btn-secondary px-6 py-3">
+          ← Geri
+        </button>
+        <button onClick={onNext} className="btn-primary px-6 py-3">
+          {nextLabel}
+        </button>
+      </div>
+    </div>
+  );
+}

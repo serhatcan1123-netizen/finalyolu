@@ -1,0 +1,9 @@
+# *
+User-agent: *
+Allow: /
+
+# Host
+Host: https://www.siteadresi.com
+
+# Sitemaps
+Sitemap: https://www.siteadresi.com/sitemap.xml
