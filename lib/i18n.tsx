@@ -1,6 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
+import trTranslations from '../../public/locales/tr/common.json';
 
 type Locale = 'tr' | 'en';
 type Translations = Record<string, unknown>;
@@ -32,7 +33,7 @@ function getNestedValue(obj: Translations, path: string): string {
 
 export function I18nProvider({ children }: { children: React.ReactNode }) {
   const [locale, setLocaleState] = useState<Locale>('tr');
-  const [translations, setTranslations] = useState<Translations>({});
+  const [translations, setTranslations] = useState<Translations>(trTranslations as Translations);
 
   useEffect(() => {
     const saved = localStorage.getItem('dk2026_locale') as Locale | null;
