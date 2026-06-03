@@ -133,7 +133,7 @@ export default function GroupPredictor({ groupIndex, prediction, onChange }: Gro
               onPointerUp={() => onPointerUp(i)}
               onPointerCancel={() => onPointerUp(i)}
               /* legacy desktop drag-and-drop fallback */
-              draggable
+              draggable={false}
               onDragStart={() => { dragIndex.current = i; setDragging(i); }}
               onDragOver={e => { e.preventDefault(); setDragOver(i); }}
               onDragLeave={() => setDragOver(null)}
