@@ -10,14 +10,14 @@ interface OddsItem {
 }
 
 const TEAM_NAME_MAP: Record<string, string> = {
-  'France': 'fransa', 'Spain': 'ispanya', 'England': 'ingiltere',
-  'Portugal': 'portekiz', 'Argentina': 'arjantin', 'Brazil': 'brezilya',
-  'Germany': 'almanya', 'Netherlands': 'hollanda', 'Belgium': 'belcika',
-  'Croatia': 'hirvatistan', 'Morocco': 'fas', 'Uruguay': 'uruguay',
-  'Colombia': 'kolombiya', 'Italy': 'italya', 'United States': 'abd',
-  'Mexico': 'meksika', 'Japan': 'japonya', 'Senegal': 'senegal',
-  'Denmark': 'danimarka', 'Switzerland': 'isvicre', 'Austria': 'avusturya',
-  'Turkey': 'turkiye', 'Australia': 'avustralya', 'South Korea': 'g-kore',
+  'France': 'france', 'Spain': 'spain', 'England': 'england',
+  'Portugal': 'portugal', 'Argentina': 'argentina', 'Brazil': 'brazil',
+  'Germany': 'germany', 'Netherlands': 'netherlands', 'Belgium': 'belgium',
+  'Croatia': 'croatia', 'Morocco': 'morocco', 'Uruguay': 'uruguay',
+  'Colombia': 'colombia', 'United States': 'usa', 'Mexico': 'mexico',
+  'Japan': 'japan', 'Senegal': 'senegal', 'Switzerland': 'switzerland',
+  'Austria': 'austria', 'Turkey': 'turkey', 'Australia': 'australia',
+  'South Korea': 'south-korea', 'Norway': 'norway', 'Denmark': 'denmark',
 };
 
 export default function PolymarketOdds() {
