@@ -39,7 +39,7 @@ export default function TeamDetailPage() {
 
   const TABS = [
     { id: 'squad', label: `Kadro${squad.length > 0 ? ` (${squad.length})` : ''}` },
-    { id: 'matches', label: locale === 'en' ? `Matches (${teamMatches.length})` : `Maçlar (${teamMatches.length})` },
+    { id: 'matches', label: `Maçlar (${teamMatches.length})` },
     { id: 'stats', label: 'İstatistikler' },
   ] as const;
 
