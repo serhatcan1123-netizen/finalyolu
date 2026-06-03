@@ -11,7 +11,7 @@ import PolymarketOdds from '@/components/ui/PolymarketOdds';
 import { GROUP_MATCHES, GROUPS, TOP_SCORERS } from '@/lib/api/mock-data';
 
 export default function HomePage() {
-  const { t } = useI18n();
+  const { t, locale } = useI18n();
   // Show first 6 group stage matches (opening week)
   const upcomingMatches = GROUP_MATCHES.slice(0, 6);
 
@@ -139,7 +139,7 @@ export default function HomePage() {
           {/* Polymarket odds */}
           <div className="lg:col-span-2">
             <h2 className="font-display text-3xl md:text-4xl tracking-widest uppercase mb-6" style={{ color: '#F0F0F5' }}>
-              Şampiyonluk Oranları
+              {locale === 'en' ? 'Championship Odds' : '{locale === 'en' ? 'Championship Odds' : 'Şampiyonluk Oranları'}'}
             </h2>
             <PolymarketOdds />
           </div>

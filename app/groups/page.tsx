@@ -133,7 +133,7 @@ function GroupCard({ group, expanded, onToggle }: {
         <div style={{ borderTop: '1px solid rgba(42,42,58,0.5)' }}>
           <div className="px-4 py-3" style={{ background: 'rgba(0,0,0,0.15)' }}>
             <h4 className="text-xs uppercase tracking-widest font-mono-custom mb-3" style={{ color: '#8A8A9A' }}>
-              Grup Maçları ({groupMatches.length} maç)
+              {locale === 'en' ? `Group Matches (${groupMatches.length})` : `Grup Maçları (${groupMatches.length} maç)`}
             </h4>
             <div className="space-y-2">
               {groupMatches.map(match => (
@@ -243,7 +243,7 @@ export default function GroupsPage() {
         <span>ℹ️</span>
         <p style={{ color: '#8A8A9A' }}>
           Grup sıralamaları henüz 0-0 gösteriliyor çünkü turnuva <strong style={{ color: '#C9A84C' }}>11 Haziran 2026</strong>'da başlıyor.
-          Maçlar başladıkça gerçek sonuçlar burada güncellenecek.
+          {locale === 'en' ? 'Real results will be updated here as matches are played.' : '{locale === 'en' ? 'Real results will be updated here as matches are played.' : 'Maçlar başladıkça gerçek sonuçlar burada güncellenecek.'}'}
         </p>
       </div>
     </div>

@@ -182,7 +182,7 @@ export default function FixturesPage() {
               borderColor: activeGroup === g ? 'rgba(201,168,76,0.5)' : '#2A2A3A',
             }}
           >
-            {g === 'Tümü' ? 'Tüm Gruplar' : `Grup ${g}`}
+            {locale === 'en' ? (g === 'Tümü' ? 'All Groups' : `Group ${g}`) : (g === 'Tümü' ? 'Tüm Gruplar' : `Grup ${g}`)}
           </button>
         ))}
       </div>

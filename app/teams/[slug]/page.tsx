@@ -27,7 +27,7 @@ export default function TeamDetailPage() {
       <div className="max-w-5xl mx-auto px-4 py-20 text-center">
         <div className="text-5xl mb-4">⚠️</div>
         <p className="font-semibold text-lg mb-4" style={{ color: '#F0F0F5' }}>Takım bulunamadı</p>
-        <Link href="/teams" className="btn-secondary inline-flex">← Tüm Takımlar</Link>
+        <Link href="/teams" className="btn-secondary inline-flex">{locale === 'en' ? '← All Teams' : '{locale === 'en' ? '← All Teams' : '← Tüm Takımlar'}'}</Link>
       </div>
     );
   }
@@ -39,7 +39,7 @@ export default function TeamDetailPage() {
 
   const TABS = [
     { id: 'squad', label: `Kadro${squad.length > 0 ? ` (${squad.length})` : ''}` },
-    { id: 'matches', label: `Maçlar (${teamMatches.length})` },
+    { id: 'matches', label: locale === 'en' ? `Matches (${teamMatches.length})` : locale === 'en' ? `Matches (${teamMatches.length})` : `Maçlar (${teamMatches.length})` },
     { id: 'stats', label: 'İstatistikler' },
   ] as const;
 
@@ -51,7 +51,7 @@ export default function TeamDetailPage() {
         className="inline-flex items-center gap-2 text-sm mb-6 transition-colors hover:text-white"
         style={{ color: '#8A8A9A' }}
       >
-        ← Tüm Takımlar
+        {locale === 'en' ? '← All Teams' : '{locale === 'en' ? '← All Teams' : '← Tüm Takımlar'}'}
       </Link>
 
       {/* Hero header */}
@@ -112,7 +112,7 @@ export default function TeamDetailPage() {
               {oddsEntry && (
                 <div>
                   <div className="font-display text-2xl leading-none" style={{ color: '#C9A84C' }}>{oddsEntry.probability}%</div>
-                  <div className="text-xs font-mono-custom" style={{ color: '#8A8A9A' }}>Şampiyonluk (Polymarket)</div>
+                  <div className="text-xs font-mono-custom" style={{ color: '#8A8A9A' }}>{locale === 'en' ? 'Championship (Polymarket)' : '{locale === 'en' ? 'Championship (Polymarket)' : 'Şampiyonluk (Polymarket)'}'}</div>
                 </div>
               )}
               {squad.length > 0 && (
