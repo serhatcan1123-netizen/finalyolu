@@ -1,7 +1,7 @@
 'use client';
 
 import React, { createContext, useContext, useState, useEffect, useCallback } from 'react';
-import trTranslations from '../../public/locales/tr/common.json';
+import trTranslations from '../public/locales/tr/common.json';
 
 type Locale = 'tr' | 'en';
 type Translations = Record<string, unknown>;
