@@ -1,4 +1,5 @@
 'use client';
+import React from 'react';
 
 import { motion } from 'framer-motion';
 import Link from 'next/link';
@@ -7,7 +8,6 @@ import { useI18n } from '@/lib/i18n';
 import Countdown from '@/components/ui/Countdown';
 import MatchCard from '@/components/match/MatchCard';
 import GroupTable from '@/components/match/GroupTable';
-import AdBanner from '@/components/layout/AdBanner';
 import PolymarketOdds from '@/components/ui/PolymarketOdds';
 import { GROUP_MATCHES, GROUPS, TOP_SCORERS } from '@/lib/api/mock-data';
 
@@ -113,6 +113,91 @@ function SectionHead({
 /* ═══════════════════════════════════════════════════════════════════════ */
 /*  PAGE                                                                   */
 /* ═══════════════════════════════════════════════════════════════════════ */
+
+const FACTS = [
+  "Meksika, Dünya Kupası tarihinin en çok kaybeden takımı — 28 mağlubiyet.",
+  "Just Fontaine, tek bir Dünya Kupası'nda 13 gol attı. Bu rekor 68 yıldır kırılmadı.",
+  "Hakan Şükür, 2002'de Güney Kore'ye karşı 11. saniyede gol attı — Dünya Kupası'nın en hızlı golü.",
+  "Miroslav Klose, 16 golle Dünya Kupası'nın tüm zamanların en golcüsü — Ronaldo veya Messi değil.",
+  "Pelé ilk Dünya Kupası golünü 17 yaşında attı. Hâlâ en genç finalist rekoru elinde.",
+  "1950 Dünya Kupası'nda final maçı yoktu — Brezilya son grup maçında Uruguay'a kaybedince şampiyonluğu kaptırdı.",
+  "Kuzey Kore 1966'da İtalya'yı 1-0 yenerek çeyrek finale çıktı. Bir daha hiç Dünya Kupası'na katılamadı.",
+  "2026 Dünya Kupası'nda 104 maç oynanacak — tüm önceki turnuvaların rekorunu kırıyor.",
+]
+
+function FactTicker() {
+  const [idx, setIdx] = React.useState(0)
+  const [visible, setVisible] = React.useState(true)
+  React.useEffect(() => {
+    const iv = setInterval(() => {
+      setVisible(false)
+      setTimeout(() => {
+        setIdx(i => (i + 1) % FACTS.length)
+        setVisible(true)
+      }, 400)
+    }, 8000)
+    return () => clearInterval(iv)
+  }, [])
+  return (
+    <div style={{
+      borderTop: '1px solid #1A1A24',
+      borderBottom: '1px solid #1A1A24',
+      background: '#0D0D14',
+      padding: '14px 0',
+      overflow: 'hidden',
+    }}>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-4">
+        <span style={{
+          fontFamily: 'JetBrains Mono, monospace',
+          fontSize: '0.6rem',
+          letterSpacing: '0.15em',
+          textTransform: 'uppercase',
+          color: '#C8102E',
+          whiteSpace: 'nowrap',
+          flexShrink: 0,
+        }}>BİLİYOR MUYDUN</span>
+        <span style={{ color: '#2A2A3A', flexShrink: 0 }}>·</span>
+        <p style={{
+          fontFamily: 'DM Sans, sans-serif',
+          fontSize: '0.85rem',
+          color: '#6A6A7A',
+          transition: 'opacity 0.4s',
+          opacity: visible ? 1 : 0,
+          margin: 0,
+        }}>
+          {FACTS[idx]}
+        </p>
+      </div>
+    </div>
+  )
+}
+
+function HowItWorks() {
+  const steps = [
+    { step: "01", title: "TAHMİN ET", desc: "Tüm turnuvayı tahmin et — gruplardan finale kadar", icon: "⚽", href: "/predict" },
+    { step: "02", title: "SIRALAMAYA GİR", desc: "Nicknameni gir, global sıralamada yerini al", icon: "🏆", href: "/leaderboard" },
+    { step: "03", title: "KAZAN", desc: "Turnuva boyunca puan topla, ilk 3'e gir", icon: "🎯", href: "/leaderboard" },
+  ]
+  return (
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1px', background: '#1A1A24', border: '1px solid #1A1A24', borderRadius: '16px', overflow: 'hidden' }}>
+        {steps.map((s, i) => (
+          <a key={i} href={s.href} style={{ textDecoration: 'none', display: 'block', background: '#0D0D14', padding: '32px 28px', transition: 'background 0.2s' }}
+            onMouseEnter={e => (e.currentTarget.style.background = '#111118')}
+            onMouseLeave={e => (e.currentTarget.style.background = '#0D0D14')}
+          >
+            <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '16px' }}>
+              <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.65rem', letterSpacing: '0.2em', color: '#C8102E' }}>{s.step}</span>
+              <span style={{ fontSize: '1.5rem', opacity: 0.6 }}>{s.icon}</span>
+            </div>
+            <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '1.1rem', fontWeight: 800, letterSpacing: '-0.02em', color: '#F0F0F5', marginBottom: '8px' }}>{s.title}</p>
+            <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.8rem', color: '#4A4A5A', lineHeight: 1.6 }}>{s.desc}</p>
+          </a>
+        ))}
+      </div>
+    </div>
+  )
+}
 
 export default function HomePage() {
   const { t, locale } = useI18n();
@@ -276,10 +361,8 @@ export default function HomePage() {
       {/* Ribbon divider */}
       <RibbonStrip />
 
-      {/* Ad */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
-        <AdBanner slot="1234567890" format="leaderboard" />
-      </div>
+      {/* Bilgi Ticker */}
+      <FactTicker />
 
       {/* ── UPCOMING MATCHES ─────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
@@ -408,10 +491,8 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* Ad */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
-        <AdBanner slot="0987654321" format="responsive" />
-      </div>
+      {/* TAHMİN ET - SIRALAMAYA GİR - KAZAN */}
+      <HowItWorks />
 
       {/* Ribbon divider */}
       <RibbonStrip h={4} />
