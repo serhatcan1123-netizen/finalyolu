@@ -259,6 +259,31 @@ export default function LeaderboardPage() {
               borderRadius: '12px',
               overflow: 'hidden',
             }}>
+              {/* Podium prizes */}
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: '1px solid #1E1E2A' }}>
+                {[
+                  { rank: 1, color: '#C9A84C', label: '1. sıra ödülü' },
+                  { rank: 2, color: '#9CA3AF', label: '2. sıra ödülü' },
+                  { rank: 3, color: '#CD7F32', label: '3. sıra ödülü' },
+                ].map(({ rank, color, label }) => (
+                  <div key={rank} style={{
+                    padding: '14px 20px',
+                    borderRight: rank < 3 ? '1px solid #1E1E2A' : 'none',
+                    borderBottom: `2px solid ${color}`,
+                  }}>
+                    <p style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.6rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#3A3A4A', marginBottom: '4px' }}>
+                      {label}
+                    </p>
+                    <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.85rem', fontWeight: 700, color }}>
+                      #ödülslotu
+                    </p>
+                    <p style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.6rem', color: '#2A2A3A', marginTop: '2px' }}>
+                      turnuva sonunda açıklanacak
+                    </p>
+                  </div>
+                ))}
+              </div>
+
               {/* Header row */}
               <div style={{
                 display: 'grid',
