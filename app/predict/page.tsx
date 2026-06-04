@@ -603,6 +603,18 @@ export default function PredictPage() {
         />
       )}
     </div>
+      {/* Score Modal */}
+      {scoreModalData && (
+        <ScoreModal
+          matchId={scoreModalData.matchId}
+          homeSlug={scoreModalData.homeSlug}
+          awaySlug={scoreModalData.awaySlug}
+          winnerSlug={scoreModalData.winnerSlug}
+          initialScore={prediction.knockoutScores?.[scoreModalData.matchId]}
+          onSave={updateScore}
+          onClose={() => setScoreModalData(null)}
+        />
+      )}
   );
 }
 
@@ -663,18 +675,5 @@ function KnockoutStage({
         </button>
       </div>
     </div>
-
-    {/* Score Modal */}
-    {scoreModalData && (
-      <ScoreModal
-        matchId={scoreModalData.matchId}
-        homeSlug={scoreModalData.homeSlug}
-        awaySlug={scoreModalData.awaySlug}
-        winnerSlug={scoreModalData.winnerSlug}
-        initialScore={prediction.knockoutScores?.[scoreModalData.matchId]}
-        onSave={updateScore}
-        onClose={() => setScoreModalData(null)}
-      />
-    )}
   );
 }
