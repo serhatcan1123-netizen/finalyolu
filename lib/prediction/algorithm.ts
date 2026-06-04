@@ -66,15 +66,15 @@ export interface ActualResults {
 
 const MAX_SCORES = {
   groupPositions: 1200,  // 12 grup × 100
-  roundOf32: 3200,       // 32 takım × 100
-  roundOf16: 3200,       // 16 takım × 200
-  quarterFinals: 2400,   // 8 takım × 300
-  semiFinals: 1600,      // 4 takım × 400
-  thirdPlace: 400,
-  champion: 500,
-  topScorer: 150,
-  goldenGlove: 150,
-  scoreBonus: 2200,      // son32:16×50 + son16:8×75 + çeyrek:4×100 + yarı:2×100 + 3lük:100 + final:100
+  roundOf32: 4800,       // 32 takım × 150
+  roundOf16: 4000,       // 16 takım × 250
+  quarterFinals: 3200,   // 8 takım × 400
+  semiFinals: 2000,      // 4 takım × 500
+  thirdPlace: 600,
+  champion: 600,
+  topScorer: 200,
+  goldenGlove: 200,
+  scoreBonus: 3200,      // son32:16×75 + son16:8×100 + çeyrek:4×150 + yarı:2×150 + 3lük:150 + final:150
 };
 
 export const MAX_TOTAL = Object.values(MAX_SCORES).reduce((a, b) => a + b, 0);
@@ -116,11 +116,11 @@ export function calculateScore(
   }
 
   const knockoutRounds: Array<{ pred: KnockoutPrediction; act: KnockoutPrediction | undefined; pts: number; key: keyof typeof breakdown }> = [
-    { pred: prediction.roundOf32, act: actual.roundOf32, pts: 100, key: 'roundOf32' },
-    { pred: prediction.roundOf16, act: actual.roundOf16, pts: 200, key: 'roundOf16' },
-    { pred: prediction.quarterFinals, act: actual.quarterFinals, pts: 300, key: 'quarterFinals' },
-    { pred: prediction.semiFinals, act: actual.semiFinals, pts: 400, key: 'semiFinals' },
-    { pred: prediction.thirdPlace, act: actual.thirdPlace, pts: 400, key: 'thirdPlace' },
+    { pred: prediction.roundOf32, act: actual.roundOf32, pts: 150, key: 'roundOf32' },
+    { pred: prediction.roundOf16, act: actual.roundOf16, pts: 250, key: 'roundOf16' },
+    { pred: prediction.quarterFinals, act: actual.quarterFinals, pts: 400, key: 'quarterFinals' },
+    { pred: prediction.semiFinals, act: actual.semiFinals, pts: 500, key: 'semiFinals' },
+    { pred: prediction.thirdPlace, act: actual.thirdPlace, pts: 600, key: 'thirdPlace' },
   ];
 
   for (const round of knockoutRounds) {
@@ -133,25 +133,25 @@ export function calculateScore(
   }
 
   if (actual.champion && prediction.champion === actual.champion) {
-    breakdown.champion += 500;
+    breakdown.champion += 600;
   }
 
   if (actual.topScorer && prediction.topScorer.toLowerCase() === actual.topScorer.toLowerCase()) {
-    breakdown.topScorer = 150;
+    breakdown.topScorer = 200;
   }
 
   if (actual.goldenGlove && prediction.goldenGlove.toLowerCase() === actual.goldenGlove.toLowerCase()) {
-    breakdown.goldenGlove = 150;
+    breakdown.goldenGlove = 200;
   }
 
   if (actual.knockoutScores && prediction.knockoutScores) {
     const scoreBonusByRound: Record<string, number> = {};
-    if (actual.roundOf32) Object.keys(actual.roundOf32).forEach(id => scoreBonusByRound[id] = 50);
-    if (actual.roundOf16) Object.keys(actual.roundOf16).forEach(id => scoreBonusByRound[id] = 75);
-    if (actual.quarterFinals) Object.keys(actual.quarterFinals).forEach(id => scoreBonusByRound[id] = 100);
-    if (actual.semiFinals) Object.keys(actual.semiFinals).forEach(id => scoreBonusByRound[id] = 100);
-    if (actual.thirdPlace) Object.keys(actual.thirdPlace).forEach(id => scoreBonusByRound[id] = 100);
-    if (actual.final) Object.keys(actual.final).forEach(id => scoreBonusByRound[id] = 100);
+    if (actual.roundOf32) Object.keys(actual.roundOf32).forEach(id => scoreBonusByRound[id] = 75);
+    if (actual.roundOf16) Object.keys(actual.roundOf16).forEach(id => scoreBonusByRound[id] = 100);
+    if (actual.quarterFinals) Object.keys(actual.quarterFinals).forEach(id => scoreBonusByRound[id] = 150);
+    if (actual.semiFinals) Object.keys(actual.semiFinals).forEach(id => scoreBonusByRound[id] = 150);
+    if (actual.thirdPlace) Object.keys(actual.thirdPlace).forEach(id => scoreBonusByRound[id] = 150);
+    if (actual.final) Object.keys(actual.final).forEach(id => scoreBonusByRound[id] = 150);
 
     for (const matchId of Object.keys(actual.knockoutScores)) {
       const a = actual.knockoutScores[matchId];

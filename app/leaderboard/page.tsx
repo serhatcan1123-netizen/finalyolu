@@ -59,7 +59,7 @@ const SCORING_RULES = [
 
 const NOTES = [
   "Puanlar turnuva başladıkça gerçek sonuçlara göre otomatik güncellenecek.",
-  "Maksimum 15.000 puan kazanılabilir. Yüzde skor bu değer üzerinden hesaplanır.",
+  "Maksimum 20.000 puan kazanılabilir. Yüzde skor bu değer üzerinden hesaplanır.",
   "Grup aşaması tahminleri 11 Haziran 2026'dan itibaren kilitlenir.",
   "Eşit puanda daha erken tahmin yapan öne geçer.",
   "Skor bonusları yalnızca Son 32 ve sonrası için geçerlidir.",
@@ -119,7 +119,7 @@ export default function LeaderboardPage() {
             </span>
             <span style={{ color: '#2A2A3A' }}>·</span>
             <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.75rem', color: '#4A4A5A' }}>
-              maks 15.000 puan
+              maks 20.000 puan
             </span>
             {myRank && (
               <>
@@ -205,7 +205,7 @@ export default function LeaderboardPage() {
               </div>
               <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid #1E1E2A', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <span style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.7rem', color: '#4A4A5A' }}>maksimum toplam</span>
-                <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '1.1rem', fontWeight: 800, color: '#C9A84C' }}>15.000</span>
+                <span style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '1.1rem', fontWeight: 800, color: '#C9A84C' }}>20.000</span>
               </div>
             </div>
 
@@ -298,7 +298,7 @@ export default function LeaderboardPage() {
                   allEntries.map((entry, i) => {
                     const isMe = entry.id === myId
                     const rank = i + 1
-                    const pct = Math.round((entry.score / 15000) * 100)
+                    const pct = Math.round((entry.score / 20000) * 100)
                     const isTop3 = rank <= 3
                     const rankColors = ['#C9A84C', '#9CA3AF', '#CD7F32']
 
