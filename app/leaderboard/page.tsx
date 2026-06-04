@@ -56,12 +56,12 @@ const SCORING_RULES = [
 ]
 
 const NOTES = [
-  "Puanlar turnuva başladıkça gerçek sonuçlara göre otomatik güncellenecek.",
+  "Tüm puanlar şu an sıfırdır. Turnuva başladıkça gerçek sonuçlara göre güncellenecek.",
+  "Grup aşaması tahminleri Son 32 başladığı anda kilitlenir ve bir daha değiştirilemez.",
+  "İlk puanlar (grup aşaması puanları) Son 32 başladığı gün — tahminen 27 Haziran 2026 — puan tablosuna yansıtılacak.",
   "Maksimum 20.000 puan kazanılabilir. Yüzde skor bu değer üzerinden hesaplanır.",
-  "Grup aşaması tahminleri 11 Haziran 2026'dan itibaren kilitlenir.",
   "Eşit puanda daha erken tahmin yapan öne geçer.",
   "Skor bonusları yalnızca Son 32 ve sonrası için geçerlidir.",
-  "Tablodaki puanlar turnuva ilerledikçe gerçek sonuçlara göre güncellenecektir. Turnuva öncesi tüm puanlar sıfırdır.",
 ]
 
 export default function LeaderboardPage() {
