@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useI18n } from '@/lib/i18n';
 
-const TOURNAMENT_START = new Date('2026-06-15T19:00:00-05:00').getTime();
+const TOURNAMENT_START = new Date('2026-06-11T19:00:00-06:00').getTime();
 
 interface TimeLeft {
   days: number;
