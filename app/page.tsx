@@ -361,6 +361,7 @@ export default function HomePage() {
       {/* Ribbon divider */}
       <RibbonStrip />
 
+
       {/* Bilgi Ticker */}
       <FactTicker />
 
