@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
+import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { useI18n } from '@/lib/i18n';
 import { GROUPS, TEAMS } from '@/lib/api/mock-data';
@@ -15,6 +16,8 @@ import GroupPredictor from '@/components/predict/GroupPredictor';
 import { KnockoutMatch, getRoundOf32Matchups, buildNextRound } from '@/components/predict/KnockoutBracket';
 import ScoreModal from '@/components/predict/ScoreModal';
 import NicknameModal from '@/components/predict/NicknameModal';
+import { saveToLeaderboard } from '@/lib/prediction/leaderboard';
+import { supabase } from '@/lib/supabase';
 import ShareCard from '@/components/predict/ShareCard';
 
 const STAGES = [
@@ -80,9 +83,36 @@ export default function PredictPage() {
     typeof window !== 'undefined' ? localStorage.getItem('finalyolu_leaderboard_id') : null
   );
 
+  const searchParams = useSearchParams();
+
   useEffect(() => {
     setPrediction(loadPrediction());
   }, []);
+
+  // Magic link dönüşünde otomatik kayıt
+  useEffect(() => {
+    if (searchParams.get('auth') !== 'success') return;
+    const pending = localStorage.getItem('finalyolu_pending_prediction');
+    if (!pending) return;
+    const { nickname, predictions: pendingPredictions } = JSON.parse(pending);
+
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
+      if (!session) return;
+      const alreadySaved = localStorage.getItem('finalyolu_leaderboard_id');
+      if (alreadySaved) return;
+      const id = await saveToLeaderboard(
+        nickname,
+        pendingPredictions,
+        session.user.email,
+        session.user.id
+      );
+      if (id) {
+        localStorage.setItem('finalyolu_leaderboard_id', id);
+        localStorage.removeItem('finalyolu_pending_prediction');
+        setLeaderboardId(id);
+      }
+    });
+  }, [searchParams]);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });

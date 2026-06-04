@@ -1,13 +1,19 @@
-import { createClient } from '@supabase/supabase-js'
+import { createClient as createSupabaseClient } from '@supabase/supabase-js'
 
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-export const supabase = createClient(supabaseUrl, supabaseKey)
+export const supabase = createSupabaseClient(supabaseUrl, supabaseKey)
+
+export function createClient() {
+  return createSupabaseClient(supabaseUrl, supabaseKey)
+}
 
 export type PredictionRow = {
   id: string
   nickname: string
+  email: string
+  user_id: string
   predictions: any
   score: number
   created_at: string

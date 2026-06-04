@@ -1,9 +1,9 @@
 import { supabase } from '../supabase'
 
-export async function saveToLeaderboard(nickname: string, predictions: any): Promise<string | null> {
+export async function saveToLeaderboard(nickname: string, predictions: any, email?: string, user_id?: string): Promise<string | null> {
   const { data, error } = await supabase
     .from('predictions')
-    .insert([{ nickname: nickname.trim(), predictions, score: 0 }])
+    .insert([{ nickname: nickname.trim(), predictions, score: 0, email: email ?? null, user_id: user_id ?? null }])
     .select('id')
     .single()
 
