@@ -5,6 +5,7 @@
       "name": "dk2026-dev",
       "runtimeExecutable": "npm",
       "runtimeArgs": ["run", "dev", "--", "--port", "3333"],
+      "cwd": "/Users/serhatcan/Desktop/dk2026",
       "port": 3333
     }
   ]

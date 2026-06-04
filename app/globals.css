@@ -3,7 +3,7 @@
 @import "tailwindcss";
 
 @theme {
-  --color-background: #0A0A0F;
+  --color-background: #000000;
   --color-surface: #111118;
   --color-card: #1A1A24;
   --color-border: #2A2A3A;
@@ -26,7 +26,7 @@ html {
 }
 
 body {
-  background-color: #0A0A0F;
+  background-color: #000000;
   color: #F0F0F5;
   font-family: 'DM Sans', sans-serif;
   min-height: 100vh;

@@ -1,5 +1,6 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useI18n } from '@/lib/i18n';
@@ -10,247 +11,518 @@ import AdBanner from '@/components/layout/AdBanner';
 import PolymarketOdds from '@/components/ui/PolymarketOdds';
 import { GROUP_MATCHES, GROUPS, TOP_SCORERS } from '@/lib/api/mock-data';
 
+const C = {
+  red:   '#C8102E',
+  green: '#009A44',
+  blue:  '#003DA5',
+  gold:  '#C9A84C',
+} as const;
+
+type CKey = keyof typeof C;
+const CKEYS: CKey[] = ['red', 'green', 'blue', 'gold'];
+
+const easeOut = [0.22, 1, 0.36, 1] as const;
+
+function fadeUp(delay = 0) {
+  return {
+    initial: { opacity: 0, y: 28 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.55, delay, ease: easeOut },
+  };
+}
+
+/* ── Ribbon components ─────────────────────────────────────────────────── */
+
+function RibbonStrip({ h = 5 }: { h?: number }) {
+  return (
+    <div className="w-full flex" style={{ height: h }}>
+      {CKEYS.map(k => <div key={k} className="flex-1" style={{ background: C[k] }} />)}
+    </div>
+  );
+}
+
+function RibbonDots() {
+  return (
+    <div className="flex items-center gap-1">
+      {CKEYS.map(k => <div key={k} style={{ width: 16, height: 4, background: C[k] }} />)}
+    </div>
+  );
+}
+
+/* SVG cross-weave — 4 diagonal bands (2 going \, 2 going /) */
+function RibbonWeave() {
+  return (
+    <svg viewBox="0 0 560 560" width="560" height="560" aria-hidden="true">
+      {/* Bands going \ (top-left → bottom-right) */}
+      <path d="M-20,0 L75,0 L540,560 L445,560 Z"  fill={C.red}   />
+      <path d="M130,0 L225,0 L690,560 L595,560 Z"  fill={C.green} />
+      {/* Bands going / (top-right → bottom-left) */}
+      <path d="M485,0 L580,0 L115,560 L20,560 Z"   fill={C.blue}  />
+      <path d="M335,0 L430,0 L-35,560 L-130,560 Z" fill={C.gold}  />
+      {/* Weave: red crosses OVER blue — re-draw red clipped to the / region */}
+      <defs>
+        <clipPath id="blue-region">
+          <path d="M485,0 L580,0 L115,560 L20,560 Z" />
+        </clipPath>
+        <clipPath id="gold-region">
+          <path d="M335,0 L430,0 L-35,560 L-130,560 Z" />
+        </clipPath>
+      </defs>
+      <path d="M130,0 L225,0 L690,560 L595,560 Z" fill={C.green} clipPath="url(#blue-region)" />
+      <path d="M-20,0 L75,0 L540,560 L445,560 Z"  fill={C.red}   clipPath="url(#gold-region)" />
+    </svg>
+  );
+}
+
+/* ── Section header ────────────────────────────────────────────────────── */
+
+function SectionHead({
+  mono, title, href, linkText,
+}: {
+  mono: string; title: string; href?: string; linkText?: string;
+}) {
+  return (
+    <div className="flex items-end justify-between mb-8">
+      <div>
+        <div className="flex items-center gap-2 mb-2">
+          <RibbonDots />
+          <span className="text-xs tracking-[0.25em] uppercase font-mono-custom ml-1" style={{ color: '#555566' }}>
+            {mono}
+          </span>
+        </div>
+        <h2
+          className="font-display uppercase leading-none"
+          style={{ fontSize: 'clamp(2rem, 5vw, 3.5rem)', color: '#fff', letterSpacing: '0.03em' }}
+        >
+          {title}
+        </h2>
+      </div>
+      {href && linkText && (
+        <Link
+          href={href}
+          className="text-sm font-medium flex items-center gap-1.5 pb-1 transition-opacity hover:opacity-70"
+          style={{ color: C.gold }}
+        >
+          {linkText} →
+        </Link>
+      )}
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════════════ */
+/*  PAGE                                                                   */
+/* ═══════════════════════════════════════════════════════════════════════ */
+
 export default function HomePage() {
   const { t, locale } = useI18n();
-  // Show first 6 group stage matches (opening week)
   const upcomingMatches = GROUP_MATCHES.slice(0, 6);
 
+  const stats = [
+    { value: '48',  label: t('home.teams_count'),  color: C.red   },
+    { value: '104', label: t('home.matches_count'), color: C.blue  },
+    { value: '12',  label: t('home.groups_count'),  color: C.green },
+    { value: '16',  label: 'Şehir',                 color: C.gold  },
+  ];
+
   return (
-    <div>
+    <div style={{ background: '#000', color: '#F0F0F5' }}>
+
       {/* ── HERO ─────────────────────────────────────────────────────────── */}
-      <section
-        className="relative min-h-[88vh] flex flex-col items-center justify-center text-center px-4 overflow-hidden"
-        style={{
-          background: `
-            radial-gradient(ellipse 80% 60% at 50% 0%, rgba(201,168,76,0.13) 0%, transparent 70%),
-            radial-gradient(circle at 15% 85%, rgba(230,57,70,0.06) 0%, transparent 50%),
-            radial-gradient(circle at 85% 20%, rgba(201,168,76,0.06) 0%, transparent 50%)
-          `,
-        }}
-      >
-        {/* Background grid */}
+      <section className="relative min-h-[92vh] flex flex-col overflow-hidden">
+
+        {/* SVG ribbon weave — top-right decorative */}
         <div
-          className="absolute inset-0 pointer-events-none opacity-5"
+          className="absolute top-0 right-0 pointer-events-none select-none"
+          style={{ opacity: 0.13, transform: 'translate(60px, -40px)' }}
+        >
+          <RibbonWeave />
+        </div>
+
+        {/* Grain texture */}
+        <div
+          className="absolute inset-0 pointer-events-none"
           style={{
-            backgroundImage: 'linear-gradient(rgba(201,168,76,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(201,168,76,0.3) 1px, transparent 1px)',
-            backgroundSize: '60px 60px',
+            backgroundImage: "url(\"data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E\")",
+            opacity: 0.025,
           }}
         />
 
-        <div className="relative z-10 max-w-4xl mx-auto">
-          {/* Trophy */}
-          <div className="mb-6">
-            <span style={{ fontSize: '5rem', display: 'block', filter: 'drop-shadow(0 0 30px rgba(201,168,76,0.5))' }}>🏆</span>
-          </div>
+        {/* Main hero content */}
+        <div className="relative z-10 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 flex-1 flex flex-col justify-center pt-28 pb-8">
+          <div className="grid grid-cols-1 lg:grid-cols-[1fr_300px] gap-12 items-center">
 
-          {/* Pre-title */}
-          <div
-            className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full mb-5 text-xs tracking-widest uppercase font-mono-custom"
-            style={{ background: 'rgba(201,168,76,0.12)', border: '1px solid rgba(201,168,76,0.3)', color: '#C9A84C' }}
-          >
-            🌎 {t('home.host_countries')}
-          </div>
+            {/* Left: typography block */}
+            <div>
+              <motion.div {...fadeUp(0)} className="flex items-center gap-3 mb-6">
+                <RibbonDots />
+                <span className="text-xs tracking-[0.3em] uppercase font-mono-custom ml-1" style={{ color: '#555566' }}>
+                  🌎 {t('home.host_countries')}
+                </span>
+              </motion.div>
 
-          {/* Main title */}
-          <h1
-            className="font-display uppercase leading-none mb-3"
-            style={{ fontSize: 'clamp(2.8rem, 10vw, 6rem)', letterSpacing: '0.06em', color: '#F0F0F5' }}
-          >
-            {t('home.hero_title')}
-          </h1>
+              <motion.h1
+                {...fadeUp(0.08)}
+                className="font-display uppercase"
+                style={{
+                  fontSize: 'clamp(5rem, 17vw, 13rem)',
+                  lineHeight: 0.86,
+                  letterSpacing: '-0.015em',
+                  color: '#fff',
+                }}
+              >
+                {t('home.hero_title')}
+              </motion.h1>
 
-          <p className="text-lg md:text-xl mb-10" style={{ color: '#8A8A9A', maxWidth: '500px', margin: '0 auto 2.5rem' }}>
-            {t('home.hero_subtitle')}
-          </p>
+              <motion.p
+                {...fadeUp(0.18)}
+                className="mt-5 text-lg max-w-lg"
+                style={{ color: '#525260', lineHeight: 1.6 }}
+              >
+                {t('home.hero_subtitle')}
+              </motion.p>
 
-          {/* Countdown */}
-          <div className="mb-10">
-            <p
-              className="text-xs uppercase tracking-widest mb-5 font-mono-custom"
-              style={{ color: '#8A8A9A' }}
+              <motion.div {...fadeUp(0.27)} className="mt-9 flex flex-wrap gap-3">
+                <Link
+                  href="/predict"
+                  className="font-display tracking-[0.12em] uppercase inline-flex items-center gap-2 transition-all duration-200 hover:brightness-110 active:scale-[0.97]"
+                  style={{
+                    background: C.red,
+                    color: '#fff',
+                    fontSize: '1.05rem',
+                    padding: '0.9rem 2.4rem',
+                    letterSpacing: '0.1em',
+                  }}
+                >
+                  ⚽ {t('home.cta_predict')}
+                </Link>
+                <Link
+                  href="/fixtures"
+                  className="font-display tracking-[0.1em] uppercase inline-flex items-center gap-2 transition-all duration-200 hover:border-white/30"
+                  style={{
+                    background: 'transparent',
+                    color: '#F0F0F5',
+                    fontSize: '1.05rem',
+                    padding: '0.9rem 2.4rem',
+                    border: '1px solid rgba(255,255,255,0.1)',
+                  }}
+                >
+                  MAÇ TAKVİMİ <span style={{ color: C.gold }}>→</span>
+                </Link>
+              </motion.div>
+            </div>
+
+            {/* Right: countdown panel */}
+            <motion.div
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ duration: 0.6, delay: 0.22, ease: easeOut }}
+              className="hidden lg:flex flex-col items-center justify-center p-8"
+              style={{
+                background: 'rgba(255,255,255,0.02)',
+                border: '1px solid rgba(255,255,255,0.06)',
+                borderTop: `3px solid ${C.gold}`,
+              }}
             >
-              {t('home.countdown_title')}
-            </p>
-            <Countdown />
+              <p
+                className="text-xs uppercase tracking-[0.25em] mb-5 font-mono-custom"
+                style={{ color: '#555566' }}
+              >
+                {t('home.countdown_title')}
+              </p>
+              <Countdown />
+            </motion.div>
           </div>
-
-          {/* CTA */}
-          <Link
-            href="/predict"
-            className="btn-primary font-display tracking-widest inline-flex items-center gap-2"
-            style={{ fontSize: '1.25rem', padding: '1rem 2.5rem', borderRadius: '0.75rem' }}
-          >
-            ⚽ {t('home.cta_predict')}
-          </Link>
         </div>
 
-        {/* Stats bar */}
-        <div
-          className="absolute bottom-0 left-0 right-0"
-          style={{ borderTop: '1px solid rgba(42,42,58,0.6)', background: 'rgba(10,10,15,0.6)', backdropFilter: 'blur(8px)' }}
+        {/* Bento stats strip */}
+        <motion.div
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.5, delay: 0.42 }}
+          className="relative z-10"
+          style={{ borderTop: '1px solid rgba(255,255,255,0.05)', background: 'rgba(0,0,0,0.7)', backdropFilter: 'blur(12px)' }}
         >
-          <div className="max-w-7xl mx-auto px-4 py-4 flex items-center justify-center gap-8 md:gap-20 flex-wrap">
-            {[
-              { value: '48', label: t('home.teams_count') },
-              { value: '104', label: t('home.matches_count') },
-              { value: '12', label: t('home.groups_count') },
-              { value: '16', label: 'Şehir' },
-            ].map(stat => (
-              <div key={stat.label} className="text-center">
-                <div className="font-display text-3xl md:text-4xl leading-none" style={{ color: '#C9A84C' }}>{stat.value}</div>
-                <div className="text-xs mt-1 uppercase tracking-widest" style={{ color: '#8A8A9A', fontFamily: 'JetBrains Mono, monospace' }}>{stat.label}</div>
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 grid grid-cols-4">
+            {stats.map((s, i) => (
+              <div
+                key={s.label}
+                className="py-5 text-center"
+                style={{
+                  borderLeft: i > 0 ? '1px solid rgba(255,255,255,0.05)' : 'none',
+                  borderTop: `3px solid ${s.color}`,
+                }}
+              >
+                <div
+                  className="font-display leading-none"
+                  style={{ fontSize: 'clamp(2rem, 4vw, 3.5rem)', color: s.color }}
+                >
+                  {s.value}
+                </div>
+                <div
+                  className="text-xs mt-2 uppercase tracking-widest font-mono-custom"
+                  style={{ color: '#555566' }}
+                >
+                  {s.label}
+                </div>
               </div>
             ))}
           </div>
-        </div>
+        </motion.div>
       </section>
 
-      {/* Ad below hero */}
+      {/* Ribbon divider */}
+      <RibbonStrip />
+
+      {/* Ad */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-5">
         <AdBanner slot="1234567890" format="leaderboard" />
       </div>
 
       {/* ── UPCOMING MATCHES ─────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h2 className="font-display text-3xl md:text-4xl tracking-widest uppercase" style={{ color: '#F0F0F5' }}>
-              {t('home.upcoming_matches')}
-            </h2>
-            <p className="text-sm mt-1" style={{ color: '#8A8A9A' }}>
-              11 Haziran 2026 — Grup Aşaması başlıyor
-            </p>
-          </div>
-          <Link href="/fixtures" className="text-sm font-medium transition-colors hover:underline flex items-center gap-1" style={{ color: '#C9A84C' }}>
-            {t('home.view_all')} <span>→</span>
-          </Link>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <SectionHead
+            mono="Fikstür"
+            title={t('home.upcoming_matches')}
+            href="/fixtures"
+            linkText={t('home.view_all')}
+          />
+        </motion.div>
+        <p className="text-xs -mt-5 mb-8 font-mono-custom" style={{ color: '#555566' }}>
+          11 Haziran 2026 — Grup Aşaması başlıyor
+        </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {upcomingMatches.map(match => (
-            <MatchCard key={match.id} match={match} />
+          {upcomingMatches.map((match, i) => (
+            <motion.div
+              key={match.id}
+              initial={{ opacity: 0, y: 24 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.45, delay: i * 0.06, ease: easeOut }}
+            >
+              <MatchCard match={match} />
+            </motion.div>
           ))}
         </div>
       </section>
 
-      {/* ── POLYMARKET + GROUP PREVIEW (side by side on desktop) ─────────── */}
+      {/* ── POLYMARKET + TOP SCORERS ──────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-8">
-          {/* Polymarket odds */}
-          <div className="lg:col-span-2">
-            <h2 className="font-display text-3xl md:text-4xl tracking-widest uppercase mb-6" style={{ color: '#F0F0F5' }}>
-              {locale === 'en' ? 'Championship Odds' : 'Şampiyonluk Oranları'}
-            </h2>
-            <PolymarketOdds />
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6">
 
-          {/* Top scorers */}
-          <div className="lg:col-span-3">
-            <h2 className="font-display text-3xl md:text-4xl tracking-widest uppercase mb-6" style={{ color: '#F0F0F5' }}>
-              {t('home.top_scorers')}
-            </h2>
-            <div className="card overflow-hidden">
-              <div className="px-4 py-3 border-b border-border">
-                <p className="text-xs font-mono-custom" style={{ color: '#8A8A9A' }}>
+          <motion.div
+            className="lg:col-span-2"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5 }}
+          >
+            <SectionHead
+              mono="Piyasa"
+              title={locale === 'en' ? 'Championship Odds' : 'Şampiyonluk Oranları'}
+            />
+            <PolymarketOdds />
+          </motion.div>
+
+          <motion.div
+            className="lg:col-span-3"
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1 }}
+          >
+            <SectionHead mono="İstatistik" title={t('home.top_scorers')} />
+            <div
+              style={{
+                border: '1px solid rgba(255,255,255,0.06)',
+                borderTop: `3px solid ${C.gold}`,
+              }}
+            >
+              <div className="px-4 py-3" style={{ borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
+                <p className="text-xs font-mono-custom" style={{ color: '#555566' }}>
                   Turnuva başlamadı — beklenen favori golcüler
                 </p>
               </div>
               {TOP_SCORERS.map((scorer, i) => (
-                <div
+                <motion.div
                   key={scorer.player}
+                  initial={{ opacity: 0, x: -14 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.35, delay: i * 0.05 }}
                   className="flex items-center gap-4 px-4 py-3"
-                  style={{ borderBottom: i < TOP_SCORERS.length - 1 ? '1px solid rgba(42,42,58,0.5)' : 'none' }}
+                  style={{
+                    borderBottom:
+                      i < TOP_SCORERS.length - 1
+                        ? '1px solid rgba(255,255,255,0.04)'
+                        : 'none',
+                  }}
                 >
-                  <span className="font-display text-2xl w-8 text-center flex-shrink-0" style={{ color: '#C9A84C' }}>{i + 1}</span>
+                  <span
+                    className="font-display text-2xl w-8 text-center flex-shrink-0"
+                    style={{ color: C.gold }}
+                  >
+                    {i + 1}
+                  </span>
                   <div className="relative w-8 h-6 rounded overflow-hidden flex-shrink-0">
-                    <Image src={scorer.team.flag} alt={scorer.team.nameEn} fill className="object-cover" unoptimized />
+                    <Image
+                      src={scorer.team.flag}
+                      alt={scorer.team.nameEn}
+                      fill
+                      className="object-cover"
+                      unoptimized
+                    />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-sm" style={{ color: '#F0F0F5' }}>{scorer.player}</div>
-                    <div className="text-xs" style={{ color: '#8A8A9A' }}>{scorer.team.name}</div>
+                    <div className="font-semibold text-sm" style={{ color: '#F0F0F5' }}>
+                      {scorer.player}
+                    </div>
+                    <div className="text-xs" style={{ color: '#555566' }}>
+                      {scorer.team.name}
+                    </div>
                   </div>
                   <div className="flex items-center gap-6 text-right flex-shrink-0">
                     <div>
-                      <div className="font-display text-xl leading-none" style={{ color: '#C9A84C' }}>—</div>
-                      <div className="text-xs font-mono-custom" style={{ color: '#8A8A9A' }}>GOL</div>
+                      <div className="font-display text-xl leading-none" style={{ color: C.gold }}>—</div>
+                      <div className="text-xs font-mono-custom" style={{ color: '#555566' }}>GOL</div>
                     </div>
                     <div>
-                      <div className="font-display text-xl leading-none" style={{ color: '#8A8A9A' }}>—</div>
-                      <div className="text-xs font-mono-custom" style={{ color: '#8A8A9A' }}>ASİST</div>
+                      <div className="font-display text-xl leading-none" style={{ color: '#555566' }}>—</div>
+                      <div className="text-xs font-mono-custom" style={{ color: '#555566' }}>ASİST</div>
                     </div>
                   </div>
-                </div>
+                </motion.div>
               ))}
             </div>
-          </div>
+          </motion.div>
+
         </div>
       </section>
 
+      {/* Ad */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-3">
         <AdBanner slot="0987654321" format="responsive" />
       </div>
 
-      {/* ── GROUP STANDINGS PREVIEW ───────────────────────────────────────── */}
+      {/* Ribbon divider */}
+      <RibbonStrip h={4} />
+
+      {/* ── GROUP STANDINGS ──────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-14">
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <h2 className="font-display text-3xl md:text-4xl tracking-widest uppercase" style={{ color: '#F0F0F5' }}>
-              {t('home.group_standings')}
-            </h2>
-            <p className="text-sm mt-1" style={{ color: '#8A8A9A' }}>12 grup · 48 takım · Turnuva öncesi sıralama</p>
-          </div>
-          <Link href="/groups" className="text-sm font-medium transition-colors hover:underline flex items-center gap-1" style={{ color: '#C9A84C' }}>
-            {t('home.view_all')} <span>→</span>
-          </Link>
-        </div>
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+        >
+          <SectionHead
+            mono="Gruplar"
+            title={t('home.group_standings')}
+            href="/groups"
+            linkText={t('home.view_all')}
+          />
+        </motion.div>
+        <p className="text-xs -mt-5 mb-8 font-mono-custom" style={{ color: '#555566' }}>
+          12 grup · 48 takım · Turnuva öncesi sıralama
+        </p>
 
         <div className="overflow-x-auto scrollbar-hide -mx-4 px-4">
           <div className="flex gap-4 pb-2" style={{ minWidth: 'max-content' }}>
-            {GROUPS.slice(0, 6).map(group => (
-              <div key={group.id} style={{ width: '220px', flexShrink: 0 }}>
+            {GROUPS.slice(0, 6).map((group, i) => (
+              <motion.div
+                key={group.id}
+                style={{ width: '220px', flexShrink: 0 }}
+                initial={{ opacity: 0, y: 16 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.4, delay: i * 0.05 }}
+              >
                 <GroupTable group={group} compact />
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>
       </section>
 
-      {/* ── PREDICT PROMO ─────────────────────────────────────────────────── */}
+      {/* ── PREDICT CTA ──────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-20">
-        <div
-          className="relative rounded-2xl p-8 md:p-14 flex flex-col md:flex-row items-center justify-between gap-8 overflow-hidden"
-          style={{
-            background: 'linear-gradient(135deg, rgba(201,168,76,0.18) 0%, rgba(26,26,36,1) 55%)',
-            border: '1px solid rgba(201,168,76,0.35)',
-          }}
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.55 }}
+          className="relative overflow-hidden"
+          style={{ background: C.red }}
         >
-          {/* Decorative */}
-          <div className="absolute -right-8 -top-8 text-[200px] opacity-[0.04] select-none pointer-events-none" style={{ lineHeight: 1 }}>🏆</div>
-          <div className="absolute right-32 bottom-0 text-[120px] opacity-[0.04] select-none pointer-events-none" style={{ lineHeight: 1 }}>⚽</div>
-
-          <div className="relative z-10">
-            <div
-              className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs mb-4 font-mono-custom tracking-widest"
-              style={{ background: 'rgba(201,168,76,0.15)', color: '#C9A84C', border: '1px solid rgba(201,168,76,0.25)' }}
+          {/* Ribbon stripe overlay */}
+          <div className="absolute inset-0 pointer-events-none overflow-hidden">
+            <svg
+              viewBox="0 0 900 280"
+              preserveAspectRatio="xMidYMid slice"
+              className="w-full h-full"
             >
-              YENİ · TAHMİN MOTORU
-            </div>
-            <h2 className="font-display text-4xl md:text-6xl tracking-widest uppercase mb-3" style={{ color: '#C9A84C' }}>
-              {t('home.predict_promo_title')}
-            </h2>
-            <p className="text-base md:text-lg max-w-md" style={{ color: '#8A8A9A' }}>
-              {t('home.predict_promo_desc')}
-            </p>
+              <path d="M-30,0 L60,0 L520,280 L430,280 Z"   fill="#fff" opacity="0.05" />
+              <path d="M110,0 L200,0 L660,280 L570,280 Z"  fill="#fff" opacity="0.05" />
+              <path d="M640,0 L730,0 L270,280 L180,280 Z"  fill="#fff" opacity="0.05" />
+              <path d="M780,0 L870,0 L410,280 L320,280 Z"  fill="#fff" opacity="0.05" />
+            </svg>
           </div>
-          <Link
-            href="/predict"
-            className="btn-primary font-display tracking-widest flex-shrink-0"
-            style={{ fontSize: '1.2rem', padding: '1rem 2.5rem', borderRadius: '0.75rem' }}
-          >
-            {t('home.predict_promo_cta')}
-          </Link>
-        </div>
+
+          {/* Gold left accent bar */}
+          <div
+            className="absolute left-0 top-0 bottom-0"
+            style={{
+              width: 6,
+              background: `linear-gradient(to bottom, ${C.gold}, ${C.green}, ${C.blue})`,
+            }}
+          />
+
+          <div className="relative z-10 pl-10 pr-8 md:pl-14 md:pr-12 py-10 md:py-14 flex flex-col md:flex-row items-start md:items-center justify-between gap-8">
+            <div>
+              <div
+                className="inline-flex items-center gap-2 px-3 py-1 mb-4 text-xs font-mono-custom tracking-[0.2em] uppercase"
+                style={{ background: 'rgba(0,0,0,0.18)', color: 'rgba(255,255,255,0.75)' }}
+              >
+                YENİ · TAHMİN MOTORU
+              </div>
+              <h2
+                className="font-display uppercase leading-none"
+                style={{
+                  fontSize: 'clamp(3rem, 8vw, 7rem)',
+                  color: '#fff',
+                  letterSpacing: '-0.01em',
+                }}
+              >
+                {t('home.predict_promo_title')}
+              </h2>
+              <p className="mt-3 text-base max-w-md" style={{ color: 'rgba(255,255,255,0.6)' }}>
+                {t('home.predict_promo_desc')}
+              </p>
+            </div>
+            <Link
+              href="/predict"
+              className="font-display tracking-[0.12em] uppercase inline-flex items-center gap-2 flex-shrink-0 transition-all duration-200 hover:bg-white hover:text-black active:scale-[0.97]"
+              style={{
+                background: '#000',
+                color: '#fff',
+                fontSize: '1.05rem',
+                padding: '1rem 2.6rem',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              {t('home.predict_promo_cta')}
+            </Link>
+          </div>
+        </motion.div>
       </section>
+
     </div>
   );
 }
