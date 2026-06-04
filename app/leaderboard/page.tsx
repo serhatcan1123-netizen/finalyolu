@@ -52,7 +52,9 @@ const SCORING_RULES = [
   { label: "Şampiyon", desc: "Doğru tahmin", pts: 500, color: "#C9A84C" },
   { label: "Gol Kralı", desc: "Doğru tahmin", pts: 150, color: "#FB923C" },
   { label: "Altın Eldiven", desc: "Doğru tahmin", pts: 150, color: "#FB923C" },
-  { label: "Skor Bonusu", desc: "Son 32'den itibaren her doğru skor (+50/75/100)", pts: null, color: "#A78BFA" },
+  { label: "Skor Bonusu (Son 32)", desc: "Her doğru skor tahmini", pts: 50, color: "#A78BFA" },
+  { label: "Skor Bonusu (Son 16)", desc: "Her doğru skor tahmini", pts: 75, color: "#A78BFA" },
+  { label: "Skor Bonusu (Ç.Final+)", desc: "Çeyrek, yarı, final, 3.lük", pts: 100, color: "#A78BFA" },
 ]
 
 const NOTES = [
@@ -61,6 +63,7 @@ const NOTES = [
   "Grup aşaması tahminleri 11 Haziran 2026'dan itibaren kilitlenir.",
   "Eşit puanda daha erken tahmin yapan öne geçer.",
   "Skor bonusları yalnızca Son 32 ve sonrası için geçerlidir.",
+  "Tablodaki puanlar turnuva ilerledikçe gerçek sonuçlara göre güncellenecektir. Turnuva öncesi tüm puanlar sıfırdır.",
 ]
 
 export default function LeaderboardPage() {
@@ -195,7 +198,7 @@ export default function LeaderboardPage() {
                       color: rule.color,
                       whiteSpace: 'nowrap',
                     }}>
-                      {rule.pts !== null ? `+${rule.pts}` : 'değişken'}
+                      {`+${rule.pts}`}
                     </span>
                   </div>
                 ))}
