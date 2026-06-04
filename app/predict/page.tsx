@@ -63,6 +63,7 @@ function ProgressBar({ current, total }: { current: number; total: number }) {
       />
     </div>
   );
+}
 
 export default function PredictPage() {
   const { t, locale } = useI18n();
