@@ -13,6 +13,7 @@ import {
 import { loadPrediction, savePrediction, resetPrediction } from '@/lib/prediction/storage';
 import GroupPredictor from '@/components/predict/GroupPredictor';
 import { KnockoutMatch, getRoundOf32Matchups, buildNextRound } from '@/components/predict/KnockoutBracket';
+import ScoreModal from '@/components/predict/ScoreModal';
 import ShareCard from '@/components/predict/ShareCard';
 import AdBanner from '@/components/layout/AdBanner';
 
@@ -62,6 +63,22 @@ function ProgressBar({ current, total }: { current: number; total: number }) {
       />
     </div>
   );
+
+  return (
+    <>
+      {scoreModalData && (
+        <ScoreModal
+          matchId={scoreModalData.matchId}
+          homeSlug={scoreModalData.homeSlug}
+          awaySlug={scoreModalData.awaySlug}
+          winnerSlug={scoreModalData.winnerSlug}
+          initialScore={prediction.knockoutScores?.[scoreModalData.matchId]}
+          onSave={updateScore}
+          onClose={() => setScoreModalData(null)}
+        />
+      )}
+    </>
+  );
 }
 
 export default function PredictPage() {
@@ -69,6 +86,7 @@ export default function PredictPage() {
   const [stage, setStage] = useState<Stage>('groups');
   const [groupPage, setGroupPage] = useState(0);
   const [prediction, setPrediction] = useState<TournamentPrediction>(getEmptyPrediction);
+  const [scoreModalData, setScoreModalData] = useState<{ matchId: string; homeSlug: string | null; awaySlug: string | null; winnerSlug: string | null } | null>(null);
   const [showResetModal, setShowResetModal] = useState(false);
   const [showShareCard, setShowShareCard] = useState(false);
   const [saved, setSaved] = useState(false);
@@ -83,6 +101,10 @@ export default function PredictPage() {
       const groups = prev.groups.filter(g => g.groupId !== groupPred.groupId);
       return { ...prev, groups: [...groups, groupPred] };
     });
+  }
+
+  function openScoreModal(matchId: string, homeSlug: string | null, awaySlug: string | null, winnerSlug: string | null) {
+    setScoreModalData({ matchId, homeSlug, awaySlug, winnerSlug });
   }
 
   function updateScore(matchId: string, score: { home: number; away: number }) {
@@ -321,7 +343,7 @@ export default function PredictPage() {
           results={prediction.roundOf32}
           onSelect={(matchId, winner) => updateKnockout('roundOf32', matchId, winner)}
           knockoutScores={prediction.knockoutScores}
-          onSetScore={updateScore}
+          onSetScore={openScoreModal}
           onNext={() => setStage('roundOf16')}
           onPrev={() => setStage('groups')}
           {...(locale === 'en' ? {nextLabel: 'Round of 16 →'} : {nextLabel: "Son 16'ya Geç →"})}
@@ -336,7 +358,7 @@ export default function PredictPage() {
           results={prediction.roundOf16}
           onSelect={(matchId, winner) => updateKnockout('roundOf16', matchId, winner)}
           knockoutScores={prediction.knockoutScores}
-          onSetScore={updateScore}
+          onSetScore={openScoreModal}
           onNext={() => setStage('quarterFinals')}
           onPrev={() => setStage('roundOf32')}
           {...(locale === 'en' ? {nextLabel: 'Quarter Finals →'} : {nextLabel: 'Çeyrek Finale Geç →'})}
@@ -351,7 +373,7 @@ export default function PredictPage() {
           results={prediction.quarterFinals}
           onSelect={(matchId, winner) => updateKnockout('quarterFinals', matchId, winner)}
           knockoutScores={prediction.knockoutScores}
-          onSetScore={updateScore}
+          onSetScore={openScoreModal}
           onNext={() => setStage('semiFinals')}
           onPrev={() => setStage('roundOf16')}
           {...(locale === 'en' ? {nextLabel: 'Semi Finals →'} : {nextLabel: 'Yarı Finale Geç →'})}
@@ -366,7 +388,7 @@ export default function PredictPage() {
           results={prediction.semiFinals}
           onSelect={(matchId, winner) => updateKnockout('semiFinals', matchId, winner)}
           knockoutScores={prediction.knockoutScores}
-          onSetScore={updateScore}
+          onSetScore={openScoreModal}
           onNext={() => setStage('final')}
           onPrev={() => setStage('quarterFinals')}
           {...(locale === 'en' ? {nextLabel: 'Final →'} : {nextLabel: 'Finale Geç →'})}
@@ -392,7 +414,7 @@ export default function PredictPage() {
                   winnerSlug={prediction.final[finalMatchups[0].matchId] || null}
                   onSelectWinner={(matchId, winner) => updateKnockout('final', matchId, winner)}
                   score={prediction.knockoutScores?.[finalMatchups[0]?.matchId]}
-                  onSetScore={updateScore}
+                  onSetScore={(matchId) => openScoreModal(matchId, finalMatchups[0].home, finalMatchups[0].away, prediction.final[matchId] || null)}
                 />
               )}
             </div>
@@ -414,7 +436,7 @@ export default function PredictPage() {
                   winnerSlug={prediction.thirdPlace['3rd_place'] || null}
                   onSelectWinner={(matchId, winner) => updateKnockout('thirdPlace', matchId, winner)}
                   score={prediction.knockoutScores?.['3rd_place']}
-                  onSetScore={updateScore}
+                  onSetScore={(matchId) => openScoreModal(matchId, null, null, prediction.thirdPlace[matchId] || null)}
                 />
               )}
             </div>
@@ -619,7 +641,7 @@ function KnockoutStage({
   onPrev: () => void;
   nextLabel: string;
   knockoutScores?: Record<string, { home: number; away: number }>;
-  onSetScore?: (matchId: string, score: { home: number; away: number }) => void;
+  onSetScore?: (matchId: string, homeSlug: string | null, awaySlug: string | null, winnerSlug: string | null) => void;
 }) {
   const completed = matchups.filter(m => results[m.matchId]).length;
   return (
@@ -643,7 +665,7 @@ function KnockoutStage({
             winnerSlug={results[m.matchId] || null}
             onSelectWinner={onSelect}
             score={knockoutScores?.[m.matchId]}
-            onSetScore={onSetScore}
+            onSetScore={(matchId) => onSetScore?.(matchId, m.home, m.away, results[matchId] || null)}
           />
         ))}
       </div>

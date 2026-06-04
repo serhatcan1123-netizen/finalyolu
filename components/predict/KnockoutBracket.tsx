@@ -123,23 +123,17 @@ export function KnockoutMatch({ matchId, homeSlug, awaySlug, winnerSlug, score, 
           disabled={disabled || !bothKnown}
         />
         {winnerSlug && onSetScore ? (
-          <div className="flex items-center justify-center gap-1 py-1">
-            <input
-              type="number" min={0} max={20}
-              value={score?.home ?? ''}
-              onChange={e => onSetScore(matchId, { home: parseInt(e.target.value) || 0, away: score?.away ?? 0 })}
-              className="w-10 text-center text-sm font-bold rounded"
-              style={{ background: '#2A2A3A', border: '1px solid #3A3A4A', color: '#C9A84C', padding: '2px 0' }}
-            />
-            <span style={{ color: '#4A4A5A', fontSize: '0.75rem' }}>-</span>
-            <input
-              type="number" min={0} max={20}
-              value={score?.away ?? ''}
-              onChange={e => onSetScore(matchId, { home: score?.home ?? 0, away: parseInt(e.target.value) || 0 })}
-              className="w-10 text-center text-sm font-bold rounded"
-              style={{ background: '#2A2A3A', border: '1px solid #3A3A4A', color: '#C9A84C', padding: '2px 0' }}
-            />
-          </div>
+          <button
+            onClick={() => onSetScore(matchId, score || { home: 0, away: 0 })}
+            className="w-full text-center text-xs py-1 rounded transition-all"
+            style={{
+              background: score ? 'rgba(201,168,76,0.1)' : 'rgba(42,42,58,0.3)',
+              border: score ? '1px solid rgba(201,168,76,0.4)' : '1px dashed #3A3A4A',
+              color: score ? '#C9A84C' : '#4A4A5A',
+            }}
+          >
+            {score ? `${score.home} - ${score.away}` : '+ Skor Tahmin Et'}
+          </button>
         ) : (
           <div className="text-center text-xs font-mono-custom" style={{ color: '#2A2A3A' }}>vs</div>
         )}
