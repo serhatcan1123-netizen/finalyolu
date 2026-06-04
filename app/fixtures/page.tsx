@@ -3,7 +3,6 @@
 import { useState, useMemo } from 'react';
 import Image from 'next/image';
 import { useI18n } from '@/lib/i18n';
-import AdBanner from '@/components/layout/AdBanner';
 import { GROUP_MATCHES } from '@/lib/api/mock-data';
 import type { Match } from '@/lib/api/mock-data';
 import { toTSI, toTSIDate } from '@/lib/utils/time';
@@ -187,8 +186,6 @@ export default function FixturesPage() {
         ))}
       </div>
 
-      <AdBanner slot="fixtures-top" format="leaderboard" className="mb-8" />
-
       {/* Count */}
       <div className="mb-4 text-xs font-mono-custom" style={{ color: '#8A8A9A' }}>
         {filtered.length} maç gösteriliyor
@@ -223,7 +220,6 @@ export default function FixturesPage() {
                     <MatchRow match={match} />
                     {(matchIndex + 1) % 6 === 0 && matchIndex < grouped[date].length - 1 && (
                       <div className="px-4 py-2">
-                        <AdBanner slot={`match-mid-${matchIndex}`} format="responsive" />
                       </div>
                     )}
                   </div>
@@ -231,7 +227,6 @@ export default function FixturesPage() {
               </div>
 
               {dateIndex === 2 && (
-                <AdBanner slot="fixtures-mid" format="leaderboard" className="mt-6" />
               )}
             </div>
           ))}

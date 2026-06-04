@@ -16,7 +16,6 @@ import { KnockoutMatch, getRoundOf32Matchups, buildNextRound } from '@/component
 import ScoreModal from '@/components/predict/ScoreModal';
 import NicknameModal from '@/components/predict/NicknameModal';
 import ShareCard from '@/components/predict/ShareCard';
-import AdBanner from '@/components/layout/AdBanner';
 
 const STAGES = [
   'groups',
@@ -556,7 +555,6 @@ export default function PredictPage() {
             </div>
           </div>
 
-          <AdBanner slot="predict-summary" format="leaderboard" className="mb-6" />
 
           <div className="flex gap-3 flex-wrap justify-between">
             <button onClick={() => setStage('final')} className="btn-secondary px-6 py-3">
