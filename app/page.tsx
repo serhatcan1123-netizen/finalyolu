@@ -217,16 +217,18 @@ export default function HomePage() {
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
               transition={{ duration: 0.6, delay: 0.22, ease: easeOut }}
-              className="hidden lg:flex flex-col items-center justify-center p-8"
-              style={{
-                background: 'rgba(255,255,255,0.02)',
-                border: '1px solid rgba(255,255,255,0.06)',
-                borderTop: `3px solid ${C.gold}`,
-              }}
+              className="hidden lg:flex flex-col items-end justify-center"
             >
               <p
-                className="text-xs uppercase tracking-[0.25em] mb-5 font-mono-custom"
-                style={{ color: '#555566' }}
+                style={{
+                  fontFamily: 'DM Sans, sans-serif',
+                  fontSize: '0.75rem',
+                  fontWeight: 800,
+                  letterSpacing: '-0.01em',
+                  color: '#F0F0F5',
+                  textTransform: 'uppercase',
+                  marginBottom: '12px',
+                }}
               >
                 {t('home.countdown_title')}
               </p>
