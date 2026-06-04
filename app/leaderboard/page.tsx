@@ -260,26 +260,27 @@ export default function LeaderboardPage() {
               overflow: 'hidden',
             }}>
               {/* Podium prizes */}
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', borderBottom: '1px solid #1E1E2A' }}>
-                {[
-                  { rank: 1, color: '#C9A84C', label: '1. sıra ödülü' },
-                  { rank: 2, color: '#9CA3AF', label: '2. sıra ödülü' },
-                  { rank: 3, color: '#CD7F32', label: '3. sıra ödülü' },
-                ].map(({ rank, color, label }) => (
-                  <div key={rank} style={{
-                    padding: '14px 20px',
-                    borderRight: rank < 3 ? '1px solid #1E1E2A' : 'none',
-                    borderBottom: `2px solid ${color}`,
-                  }}>
-                    <p style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.6rem', letterSpacing: '0.12em', textTransform: 'uppercase', color: '#3A3A4A', marginBottom: '4px' }}>
-                      {label}
-                    </p>
-                    <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.85rem', fontWeight: 700, color }}>
-                      #ödülslotu
-                    </p>
-                    <p style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.6rem', color: '#2A2A3A', marginTop: '2px' }}>
-                      turnuva sonunda açıklanacak
-                    </p>
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', borderBottom: '1px solid #1E1E2A' }}>
+                {([
+                  { rank: 1, color: '#C9A84C', rankLabel: 'ALTIN', prize: 'Gerçek boyutlu 2026 Dünya Kupası maketi', img: '/images/prize-trophy.png' },
+                  { rank: 2, color: '#9CA3AF', rankLabel: 'GÜMÜŞ', prize: 'İstediğin takımın forması', img: '/images/prize-jersey.jpeg' },
+                  { rank: 3, color: '#CD7F32', rankLabel: 'BRONZ', prize: '1.000₺ hediye kartı', img: '/images/prize-giftcard.jpeg' },
+                ] as const).map(({ rank, color, rankLabel, prize, img }) => (
+                  <div key={rank} style={{ borderRight: rank < 3 ? '1px solid #1E1E2A' : 'none', borderBottom: `2px solid ${color}`, overflow: 'hidden' }}>
+                    <div style={{ height: '150px', position: 'relative', overflow: 'hidden' }}>
+                      <img src={img} alt={prize} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', filter: 'brightness(0.65)' }} />
+                      <span style={{ position: 'absolute', top: '10px', left: '10px', background: color, color: '#0A0A0F', fontFamily: 'JetBrains Mono, monospace', fontSize: '0.55rem', fontWeight: 700, letterSpacing: '0.1em', padding: '2px 7px', borderRadius: '3px' }}>
+                        {rankLabel}
+                      </span>
+                    </div>
+                    <div style={{ padding: '11px 14px' }}>
+                      <p style={{ fontFamily: 'JetBrains Mono, monospace', fontSize: '0.58rem', letterSpacing: '0.1em', textTransform: 'uppercase', color: '#3A3A4A', margin: '0 0 4px 0' }}>
+                        {rank}. sıra ödülü
+                      </p>
+                      <p style={{ fontFamily: 'DM Sans, sans-serif', fontSize: '0.82rem', fontWeight: 700, color, margin: 0, lineHeight: 1.3 }}>
+                        {prize}
+                      </p>
+                    </div>
                   </div>
                 ))}
               </div>
