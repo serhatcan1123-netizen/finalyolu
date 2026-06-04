@@ -21,6 +21,7 @@ export default function Navbar() {
     { href: '/fixtures', label: t('nav.matches') },
     { href: '/groups', label: t('nav.groups') },
     { href: '/teams', label: t('nav.teams') },
+    { href: '/leaderboard', label: locale === 'en' ? '🏆 Rankings' : '🏆 Sıralama' },
   ];
 
   const isActive = (href: string) => pathname === href || pathname.startsWith(href + '/');

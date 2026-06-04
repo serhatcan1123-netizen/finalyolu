@@ -42,6 +42,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
           </main>
           <Footer />
+          <a href="/predict" style={{position:"fixed",bottom:"1.5rem",right:"1.5rem",zIndex:50,display:"flex",alignItems:"center",gap:"0.5rem",padding:"0.75rem 1.25rem",borderRadius:"9999px",fontWeight:"bold",color:"white",background:"linear-gradient(135deg,#C8102E,#E63946)",boxShadow:"0 4px 24px rgba(200,16,46,0.4)",textDecoration:"none"}}><span>⚽</span><span>Tahmin Et</span></a>
         </I18nProvider>
       </body>
     </html>
