@@ -226,8 +226,6 @@ export default function FixturesPage() {
                 ))}
               </div>
 
-              {dateIndex === 2 && (
-              )}
             </div>
           ))}
         </div>
