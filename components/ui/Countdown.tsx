@@ -28,9 +28,7 @@ export default function Countdown() {
   const [time, setTime] = useState<TimeLeft>(getTimeLeft());
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setTime(getTimeLeft());
-    }, 1000);
+    const interval = setInterval(() => setTime(getTimeLeft()), 1000);
     return () => clearInterval(interval);
   }, []);
 
@@ -42,25 +40,47 @@ export default function Countdown() {
   ];
 
   return (
-    <div className="flex items-center gap-3 md:gap-4 justify-center flex-wrap">
+    <div className="flex items-end gap-6 md:gap-8">
       {units.map((unit, i) => (
-        <div key={i} className="flex items-center gap-3 md:gap-4">
-          <div
-            className="flex flex-col items-center rounded-xl p-3 md:p-4 min-w-[70px] md:min-w-[90px]"
-            style={{ background: 'rgba(26,26,36,0.9)', border: '1px solid #2A2A3A' }}
-          >
+        <div key={i} className="flex items-end gap-6 md:gap-8">
+          <div className="flex flex-col items-center">
             <span
-              className="font-display text-4xl md:text-5xl tabular-nums leading-none"
-              style={{ color: '#C9A84C' }}
+              className="tabular-nums leading-none"
+              style={{
+                fontFamily: 'DM Sans, sans-serif',
+                fontSize: 'clamp(2rem, 5vw, 3.5rem)',
+                fontWeight: 800,
+                color: '#F0F0F5',
+                letterSpacing: '-0.02em',
+              }}
             >
               {String(unit.value).padStart(2, '0')}
             </span>
-            <span className="text-xs uppercase tracking-widest mt-1" style={{ color: '#8A8A9A', fontFamily: 'JetBrains Mono, monospace' }}>
+            <span
+              style={{
+                fontFamily: 'JetBrains Mono, monospace',
+                fontSize: '0.6rem',
+                letterSpacing: '0.15em',
+                textTransform: 'uppercase',
+                color: '#4A4A5A',
+                marginTop: '4px',
+              }}
+            >
               {unit.label}
             </span>
           </div>
           {i < units.length - 1 && (
-            <span className="font-display text-3xl" style={{ color: '#C9A84C', opacity: 0.5 }}>:</span>
+            <span
+              style={{
+                fontFamily: 'DM Sans, sans-serif',
+                fontSize: 'clamp(1.5rem, 4vw, 2.5rem)',
+                fontWeight: 300,
+                color: '#2A2A3A',
+                marginBottom: '18px',
+              }}
+            >
+              :
+            </span>
           )}
         </div>
       ))}
