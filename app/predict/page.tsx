@@ -602,8 +602,6 @@ export default function PredictPage() {
           onClose={() => setShowShareCard(false)}
         />
       )}
-    </div>
-      {/* Score Modal */}
       {scoreModalData && (
         <ScoreModal
           matchId={scoreModalData.matchId}
@@ -615,6 +613,7 @@ export default function PredictPage() {
           onClose={() => setScoreModalData(null)}
         />
       )}
+    </div>
   );
 }
 
