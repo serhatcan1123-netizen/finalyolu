@@ -26,9 +26,7 @@ const MOCK_NAMES = [
 
 function generateMockEntries(): Entry[] {
   return MOCK_NAMES.map((name, i) => {
-    const baseScore = 11200 - i * 68
-    const jitter = Math.floor(Math.sin(i * 7.3) * 400)
-    const score = Math.max(200, baseScore + jitter)
+    const score = 0
     const daysAgo = Math.floor(i / 8)
     const date = new Date('2026-06-04')
     date.setDate(date.getDate() - daysAgo)
