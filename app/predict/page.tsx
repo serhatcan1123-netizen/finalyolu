@@ -1,7 +1,6 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { useI18n } from '@/lib/i18n';
 import { GROUPS, TEAMS } from '@/lib/api/mock-data';
@@ -83,15 +82,15 @@ export default function PredictPage() {
     typeof window !== 'undefined' ? localStorage.getItem('finalyolu_leaderboard_id') : null
   );
 
-  const searchParams = useSearchParams();
-
   useEffect(() => {
     setPrediction(loadPrediction());
   }, []);
 
   // Magic link dönüşünde otomatik kayıt
   useEffect(() => {
-    if (searchParams.get('auth') !== 'success') return;
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('auth') !== 'success') return;
     const pending = localStorage.getItem('finalyolu_pending_prediction');
     if (!pending) return;
     const { nickname, predictions: pendingPredictions } = JSON.parse(pending);
@@ -112,7 +111,7 @@ export default function PredictPage() {
         setLeaderboardId(id);
       }
     });
-  }, [searchParams]);
+  }, []);
 
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
