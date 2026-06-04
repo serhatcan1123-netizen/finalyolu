@@ -9,6 +9,7 @@
     "postbuild": "next-sitemap"
   },
   "dependencies": {
+    "@supabase/supabase-js": "^2.107.0",
     "framer-motion": "^12.40.0",
     "html-to-image": "^1.11.13",
     "next": "16.2.7",

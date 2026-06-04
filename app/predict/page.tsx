@@ -14,6 +14,7 @@ import { loadPrediction, savePrediction, resetPrediction } from '@/lib/predictio
 import GroupPredictor from '@/components/predict/GroupPredictor';
 import { KnockoutMatch, getRoundOf32Matchups, buildNextRound } from '@/components/predict/KnockoutBracket';
 import ScoreModal from '@/components/predict/ScoreModal';
+import NicknameModal from '@/components/predict/NicknameModal';
 import ShareCard from '@/components/predict/ShareCard';
 import AdBanner from '@/components/layout/AdBanner';
 
@@ -75,6 +76,10 @@ export default function PredictPage() {
   const [showShareCard, setShowShareCard] = useState(false);
   const [saved, setSaved] = useState(false);
   const [playoffPicks, setPlayoffPicks] = useState<string[]>([]);
+  const [showNicknameModal, setShowNicknameModal] = useState(false);
+  const [leaderboardId, setLeaderboardId] = useState<string | null>(
+    typeof window !== 'undefined' ? localStorage.getItem('finalyolu_leaderboard_id') : null
+  );
 
   useEffect(() => {
     setPrediction(loadPrediction());
@@ -560,9 +565,20 @@ export default function PredictPage() {
               >
                 📤 {t('predict.share_result')}
               </button>
-              <button onClick={handleSave} className="btn-primary px-8 py-3 font-display tracking-widest text-xl">
+              <button
+                onClick={() => {
+                  handleSave();
+                  if (!leaderboardId) setShowNicknameModal(true);
+                }}
+                className="btn-primary px-8 py-3 font-display tracking-widest text-xl"
+              >
                 {saved ? '✓ KAYDEDİLDİ!' : t('predict.save_prediction')}
               </button>
+              {leaderboardId && (
+                <a href="/leaderboard" className="btn-secondary px-6 py-3 text-center">
+                  🏆 Sıralamam
+                </a>
+              )}
             </div>
           </div>
         </div>
@@ -592,6 +608,19 @@ export default function PredictPage() {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Nickname modal */}
+      {showNicknameModal && (
+        <NicknameModal
+          predictions={prediction}
+          onClose={() => setShowNicknameModal(false)}
+          onSaved={(id, nick) => {
+            localStorage.setItem('finalyolu_leaderboard_id', id);
+            setLeaderboardId(id);
+            setShowNicknameModal(false);
+          }}
+        />
       )}
 
       {/* Share card modal */}
