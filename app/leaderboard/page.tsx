@@ -131,10 +131,10 @@ export default function LeaderboardPage() {
         </div>
 
         {/* Two column layout */}
-        <div className="flex gap-8 items-start" style={{ flexDirection: 'row' }}>
+        <div style={{ display: 'flex', gap: '2rem', alignItems: 'flex-start', flexDirection: 'row', flexWrap: 'wrap' }}>
 
           {/* LEFT: Info panels */}
-          <div className="flex flex-col gap-6" style={{ width: '45%', minWidth: '300px' }}>
+          <div className="flex flex-col gap-6" style={{ width: 'min(45%, 100%)', minWidth: 'min(300px, 100%)', flex: '1 1 300px' }}>
 
             {/* My rank card */}
             {myEntry && (
@@ -252,7 +252,7 @@ export default function LeaderboardPage() {
           </div>
 
           {/* RIGHT: Leaderboard */}
-          <div style={{ flex: 1, minWidth: 0 }}>
+          <div style={{ flex: '1 1 340px', minWidth: 0 }}>
             <div style={{
               background: '#111118',
               border: '1px solid #1E1E2A',
@@ -307,7 +307,7 @@ export default function LeaderboardPage() {
               <div
                 ref={scrollRef}
                 style={{
-                  height: '70vh',
+                  height: 'clamp(400px, 70vh, 800px)',
                   overflowY: 'auto',
                   scrollbarWidth: 'thin',
                   scrollbarColor: '#2A2A3A transparent',

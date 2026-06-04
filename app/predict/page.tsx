@@ -85,6 +85,10 @@ export default function PredictPage() {
     setPrediction(loadPrediction());
   }, []);
 
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, [stage]);
+
   function updateGroupPrediction(groupPred: GroupPrediction) {
     setPrediction(prev => {
       const groups = prev.groups.filter(g => g.groupId !== groupPred.groupId);
