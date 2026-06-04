@@ -262,7 +262,7 @@ export default function HomePage() {
               <motion.p
                 {...fadeUp(0.18)}
                 className="mt-5 text-lg max-w-lg"
-                style={{ color: '#525260', lineHeight: 1.6 }}
+                style={{ color: '#8A8A9A', lineHeight: 1.6, letterSpacing: '0.05em', fontSize: '1rem' }}
               >
                 {t('home.hero_subtitle')}
               </motion.p>
