@@ -15,6 +15,7 @@ import GroupPredictor from '@/components/predict/GroupPredictor';
 import { KnockoutMatch, getRoundOf32Matchups, buildNextRound } from '@/components/predict/KnockoutBracket';
 import ScoreModal from '@/components/predict/ScoreModal';
 import NicknameModal from '@/components/predict/NicknameModal';
+import SuccessModal from '@/components/predict/SuccessModal';
 import { saveToLeaderboard } from '@/lib/prediction/leaderboard';
 import { supabase } from '@/lib/supabase';
 import ShareCard from '@/components/predict/ShareCard';
@@ -78,6 +79,7 @@ export default function PredictPage() {
   const [saved, setSaved] = useState(false);
   const [playoffPicks, setPlayoffPicks] = useState<string[]>([]);
   const [showNicknameModal, setShowNicknameModal] = useState(false);
+  const [successNickname, setSuccessNickname] = useState<string | null>(null);
   const [leaderboardId, setLeaderboardId] = useState<string | null>(
     typeof window !== 'undefined' ? localStorage.getItem('finalyolu_leaderboard_id') : null
   );
@@ -109,6 +111,7 @@ export default function PredictPage() {
         localStorage.setItem('finalyolu_leaderboard_id', id);
         localStorage.removeItem('finalyolu_pending_prediction');
         setLeaderboardId(id);
+        setSuccessNickname(nickname);
       }
     });
   }, []);
@@ -642,6 +645,10 @@ export default function PredictPage() {
       )}
 
       {/* Nickname modal */}
+      {successNickname && (
+        <SuccessModal nickname={successNickname} onClose={() => setSuccessNickname(null)} />
+      )}
+
       {showNicknameModal && (
         <NicknameModal
           predictions={prediction}
