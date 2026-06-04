@@ -85,6 +85,13 @@ export default function PredictPage() {
     });
   }
 
+  function updateScore(matchId: string, score: { home: number; away: number }) {
+    setPrediction(prev => ({
+      ...prev,
+      knockoutScores: { ...(prev.knockoutScores || {}), [matchId]: score },
+    }));
+  }
+
   function updateKnockout(stageKey: keyof Pick<TournamentPrediction, 'roundOf32' | 'roundOf16' | 'quarterFinals' | 'semiFinals' | 'thirdPlace' | 'final'>, matchId: string, winner: string) {
     setPrediction(prev => ({
       ...prev,
@@ -313,6 +320,8 @@ export default function PredictPage() {
           matchups={r32Matchups}
           results={prediction.roundOf32}
           onSelect={(matchId, winner) => updateKnockout('roundOf32', matchId, winner)}
+          knockoutScores={prediction.knockoutScores}
+          onSetScore={updateScore}
           onNext={() => setStage('roundOf16')}
           onPrev={() => setStage('groups')}
           {...(locale === 'en' ? {nextLabel: 'Round of 16 →'} : {nextLabel: "Son 16'ya Geç →"})}
@@ -326,6 +335,8 @@ export default function PredictPage() {
           matchups={r16Matchups}
           results={prediction.roundOf16}
           onSelect={(matchId, winner) => updateKnockout('roundOf16', matchId, winner)}
+          knockoutScores={prediction.knockoutScores}
+          onSetScore={updateScore}
           onNext={() => setStage('quarterFinals')}
           onPrev={() => setStage('roundOf32')}
           {...(locale === 'en' ? {nextLabel: 'Quarter Finals →'} : {nextLabel: 'Çeyrek Finale Geç →'})}
@@ -339,6 +350,8 @@ export default function PredictPage() {
           matchups={qfMatchups}
           results={prediction.quarterFinals}
           onSelect={(matchId, winner) => updateKnockout('quarterFinals', matchId, winner)}
+          knockoutScores={prediction.knockoutScores}
+          onSetScore={updateScore}
           onNext={() => setStage('semiFinals')}
           onPrev={() => setStage('roundOf16')}
           {...(locale === 'en' ? {nextLabel: 'Semi Finals →'} : {nextLabel: 'Yarı Finale Geç →'})}
@@ -352,6 +365,8 @@ export default function PredictPage() {
           matchups={sfMatchups}
           results={prediction.semiFinals}
           onSelect={(matchId, winner) => updateKnockout('semiFinals', matchId, winner)}
+          knockoutScores={prediction.knockoutScores}
+          onSetScore={updateScore}
           onNext={() => setStage('final')}
           onPrev={() => setStage('quarterFinals')}
           {...(locale === 'en' ? {nextLabel: 'Final →'} : {nextLabel: 'Finale Geç →'})}
@@ -376,6 +391,8 @@ export default function PredictPage() {
                   awaySlug={finalMatchups[0].away}
                   winnerSlug={prediction.final[finalMatchups[0].matchId] || null}
                   onSelectWinner={(matchId, winner) => updateKnockout('final', matchId, winner)}
+                  score={prediction.knockoutScores?.[finalMatchups[0]?.matchId]}
+                  onSetScore={updateScore}
                 />
               )}
             </div>
@@ -396,6 +413,8 @@ export default function PredictPage() {
                   ) : null}
                   winnerSlug={prediction.thirdPlace['3rd_place'] || null}
                   onSelectWinner={(matchId, winner) => updateKnockout('thirdPlace', matchId, winner)}
+                  score={prediction.knockoutScores?.['3rd_place']}
+                  onSetScore={updateScore}
                 />
               )}
             </div>
@@ -589,6 +608,8 @@ function KnockoutStage({
   onNext,
   onPrev,
   nextLabel,
+  knockoutScores,
+  onSetScore,
 }: {
   title: string;
   matchups: Array<{ matchId: string; home: string | null; away: string | null }>;
@@ -597,6 +618,8 @@ function KnockoutStage({
   onNext: () => void;
   onPrev: () => void;
   nextLabel: string;
+  knockoutScores?: Record<string, { home: number; away: number }>;
+  onSetScore?: (matchId: string, score: { home: number; away: number }) => void;
 }) {
   const completed = matchups.filter(m => results[m.matchId]).length;
   return (
@@ -619,6 +642,8 @@ function KnockoutStage({
             awaySlug={m.away}
             winnerSlug={results[m.matchId] || null}
             onSelectWinner={onSelect}
+            score={knockoutScores?.[m.matchId]}
+            onSetScore={onSetScore}
           />
         ))}
       </div>

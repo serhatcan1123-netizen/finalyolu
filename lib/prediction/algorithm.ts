@@ -1,10 +1,19 @@
 export interface GroupPrediction {
   groupId: string;
-  teamOrder: string[]; // team slugs, 1st to 4th
+  teamOrder: string[];
 }
 
 export interface KnockoutPrediction {
-  [matchId: string]: string; // matchId -> winner team slug
+  [matchId: string]: string;
+}
+
+export interface MatchScore {
+  home: number;
+  away: number;
+}
+
+export interface KnockoutScores {
+  [matchId: string]: MatchScore;
 }
 
 export interface TournamentPrediction {
@@ -17,6 +26,7 @@ export interface TournamentPrediction {
   semiFinals: KnockoutPrediction;
   thirdPlace: KnockoutPrediction;
   final: KnockoutPrediction;
+  knockoutScores: KnockoutScores;
   topScorer: string;
   goldenGlove: string;
   champion: string;
@@ -36,6 +46,7 @@ export interface PredictionScore {
     champion: number;
     topScorer: number;
     goldenGlove: number;
+    scoreBonus: number;
   };
 }
 
@@ -47,24 +58,26 @@ export interface ActualResults {
   semiFinals?: KnockoutPrediction;
   thirdPlace?: KnockoutPrediction;
   final?: KnockoutPrediction;
+  knockoutScores?: KnockoutScores;
   topScorer?: string;
   goldenGlove?: string;
   champion?: string;
 }
 
 const MAX_SCORES = {
-  groupPositions: 192, // 12 groups × 4 teams × 4 pts
-  roundOf32: 160,       // 32 matches × 5 pts
-  roundOf16: 96,        // 16 matches × 6 pts
-  quarterFinals: 64,    // 8 matches × 8 pts
-  semiFinals: 40,       // 4 matches × 10 pts
+  groupPositions: 192,
+  roundOf32: 160,
+  roundOf16: 96,
+  quarterFinals: 64,
+  semiFinals: 40,
   thirdPlace: 15,
   champion: 25,
   topScorer: 15,
   goldenGlove: 10,
+  scoreBonus: 180,
 };
 
-export const MAX_TOTAL = Object.values(MAX_SCORES).reduce((a, b) => a + b, 0); // 617
+export const MAX_TOTAL = Object.values(MAX_SCORES).reduce((a, b) => a + b, 0);
 
 export function calculateScore(
   prediction: TournamentPrediction,
@@ -80,26 +93,25 @@ export function calculateScore(
     champion: 0,
     topScorer: 0,
     goldenGlove: 0,
+    scoreBonus: 0,
   };
 
-  // Group stage scoring
   if (actual.groups) {
     for (const actualGroup of actual.groups) {
       const predictedGroup = prediction.groups.find(g => g.groupId === actualGroup.groupId);
       if (!predictedGroup) continue;
       for (let i = 0; i < 4; i++) {
         if (predictedGroup.teamOrder[i] === actualGroup.teamOrder[i]) {
-          breakdown.groupPositions += 4; // exact position
+          breakdown.groupPositions += 4;
         } else if (i < 2 && actualGroup.teamOrder.slice(0, 2).includes(predictedGroup.teamOrder[i])) {
-          breakdown.groupPositions += 2; // correct qualified
+          breakdown.groupPositions += 2;
         } else if (i === 3 && actualGroup.teamOrder[3] === predictedGroup.teamOrder[3]) {
-          breakdown.groupPositions += 2; // correct eliminated
+          breakdown.groupPositions += 2;
         }
       }
     }
   }
 
-  // Knockout rounds
   const knockoutRounds: Array<{ pred: KnockoutPrediction; act: KnockoutPrediction | undefined; pts: number; key: keyof typeof breakdown }> = [
     { pred: prediction.roundOf32, act: actual.roundOf32, pts: 5, key: 'roundOf32' },
     { pred: prediction.roundOf16, act: actual.roundOf16, pts: 6, key: 'roundOf16' },
@@ -117,19 +129,26 @@ export function calculateScore(
     }
   }
 
-  // Final / champion
   if (actual.champion && prediction.champion === actual.champion) {
     breakdown.champion += 25;
   }
 
-  // Top scorer
   if (actual.topScorer && prediction.topScorer.toLowerCase() === actual.topScorer.toLowerCase()) {
     breakdown.topScorer = 15;
   }
 
-  // Golden glove
   if (actual.goldenGlove && prediction.goldenGlove.toLowerCase() === actual.goldenGlove.toLowerCase()) {
     breakdown.goldenGlove = 10;
+  }
+
+  if (actual.knockoutScores && prediction.knockoutScores) {
+    for (const matchId of Object.keys(actual.knockoutScores)) {
+      const a = actual.knockoutScores[matchId];
+      const p = prediction.knockoutScores?.[matchId];
+      if (p && a.home === p.home && a.away === p.away) {
+        breakdown.scoreBonus += 3;
+      }
+    }
   }
 
   const total = Object.values(breakdown).reduce((a, b) => a + b, 0);
@@ -149,6 +168,7 @@ export function getEmptyPrediction(): TournamentPrediction {
     semiFinals: {},
     thirdPlace: {},
     final: {},
+    knockoutScores: {},
     topScorer: '',
     goldenGlove: '',
     champion: '',

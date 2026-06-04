@@ -3,14 +3,16 @@
 import Image from 'next/image';
 import { TEAMS, GROUPS } from '@/lib/api/mock-data';
 import type { Team } from '@/lib/api/mock-data';
-import type { GroupPrediction, KnockoutPrediction } from '@/lib/prediction/algorithm';
+import type { GroupPrediction, KnockoutPrediction, MatchScore, KnockoutScores } from '@/lib/prediction/algorithm';
 
 interface KnockoutMatchProps {
   matchId: string;
   homeSlug: string | null;
   awaySlug: string | null;
   winnerSlug: string | null;
+  score?: MatchScore;
   onSelectWinner: (matchId: string, winnerSlug: string) => void;
+  onSetScore?: (matchId: string, score: MatchScore) => void;
   disabled?: boolean;
 }
 
@@ -91,7 +93,7 @@ function TeamButton({
   );
 }
 
-export function KnockoutMatch({ matchId, homeSlug, awaySlug, winnerSlug, onSelectWinner, disabled }: KnockoutMatchProps) {
+export function KnockoutMatch({ matchId, homeSlug, awaySlug, winnerSlug, score, onSelectWinner, onSetScore, disabled }: KnockoutMatchProps) {
   const bothKnown = homeSlug && awaySlug;
 
   return (
@@ -120,7 +122,27 @@ export function KnockoutMatch({ matchId, homeSlug, awaySlug, winnerSlug, onSelec
           onClick={() => homeSlug && onSelectWinner(matchId, homeSlug)}
           disabled={disabled || !bothKnown}
         />
-        <div className="text-center text-xs font-mono-custom" style={{ color: '#2A2A3A' }}>vs</div>
+        {winnerSlug && onSetScore ? (
+          <div className="flex items-center justify-center gap-1 py-1">
+            <input
+              type="number" min={0} max={20}
+              value={score?.home ?? ''}
+              onChange={e => onSetScore(matchId, { home: parseInt(e.target.value) || 0, away: score?.away ?? 0 })}
+              className="w-10 text-center text-sm font-bold rounded"
+              style={{ background: '#2A2A3A', border: '1px solid #3A3A4A', color: '#C9A84C', padding: '2px 0' }}
+            />
+            <span style={{ color: '#4A4A5A', fontSize: '0.75rem' }}>-</span>
+            <input
+              type="number" min={0} max={20}
+              value={score?.away ?? ''}
+              onChange={e => onSetScore(matchId, { home: score?.home ?? 0, away: parseInt(e.target.value) || 0 })}
+              className="w-10 text-center text-sm font-bold rounded"
+              style={{ background: '#2A2A3A', border: '1px solid #3A3A4A', color: '#C9A84C', padding: '2px 0' }}
+            />
+          </div>
+        ) : (
+          <div className="text-center text-xs font-mono-custom" style={{ color: '#2A2A3A' }}>vs</div>
+        )}
         <TeamButton
           slug={awaySlug}
           isWinner={winnerSlug === awaySlug}
