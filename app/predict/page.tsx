@@ -64,23 +64,6 @@ function ProgressBar({ current, total }: { current: number; total: number }) {
     </div>
   );
 
-  return (
-    <>
-      {scoreModalData && (
-        <ScoreModal
-          matchId={scoreModalData.matchId}
-          homeSlug={scoreModalData.homeSlug}
-          awaySlug={scoreModalData.awaySlug}
-          winnerSlug={scoreModalData.winnerSlug}
-          initialScore={prediction.knockoutScores?.[scoreModalData.matchId]}
-          onSave={updateScore}
-          onClose={() => setScoreModalData(null)}
-        />
-      )}
-    </>
-  );
-}
-
 export default function PredictPage() {
   const { t, locale } = useI18n();
   const [stage, setStage] = useState<Stage>('groups');
@@ -679,5 +662,18 @@ function KnockoutStage({
         </button>
       </div>
     </div>
+
+    {/* Score Modal */}
+    {scoreModalData && (
+      <ScoreModal
+        matchId={scoreModalData.matchId}
+        homeSlug={scoreModalData.homeSlug}
+        awaySlug={scoreModalData.awaySlug}
+        winnerSlug={scoreModalData.winnerSlug}
+        initialScore={prediction.knockoutScores?.[scoreModalData.matchId]}
+        onSave={updateScore}
+        onClose={() => setScoreModalData(null)}
+      />
+    )}
   );
 }
