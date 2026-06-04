@@ -65,16 +65,16 @@ export interface ActualResults {
 }
 
 const MAX_SCORES = {
-  groupPositions: 192,
-  roundOf32: 160,
-  roundOf16: 96,
-  quarterFinals: 64,
-  semiFinals: 40,
-  thirdPlace: 15,
-  champion: 25,
-  topScorer: 15,
-  goldenGlove: 10,
-  scoreBonus: 180,
+  groupPositions: 1200,  // 12 grup × 100
+  roundOf32: 3200,       // 32 takım × 100
+  roundOf16: 3200,       // 16 takım × 200
+  quarterFinals: 2400,   // 8 takım × 300
+  semiFinals: 1600,      // 4 takım × 400
+  thirdPlace: 400,
+  champion: 500,
+  topScorer: 150,
+  goldenGlove: 150,
+  scoreBonus: 2200,      // son32:16×50 + son16:8×75 + çeyrek:4×100 + yarı:2×100 + 3lük:100 + final:100
 };
 
 export const MAX_TOTAL = Object.values(MAX_SCORES).reduce((a, b) => a + b, 0);
@@ -100,24 +100,27 @@ export function calculateScore(
     for (const actualGroup of actual.groups) {
       const predictedGroup = prediction.groups.find(g => g.groupId === actualGroup.groupId);
       if (!predictedGroup) continue;
-      for (let i = 0; i < 4; i++) {
-        if (predictedGroup.teamOrder[i] === actualGroup.teamOrder[i]) {
-          breakdown.groupPositions += 4;
-        } else if (i < 2 && actualGroup.teamOrder.slice(0, 2).includes(predictedGroup.teamOrder[i])) {
-          breakdown.groupPositions += 2;
-        } else if (i === 3 && actualGroup.teamOrder[3] === predictedGroup.teamOrder[3]) {
-          breakdown.groupPositions += 2;
-        }
+      // Tam sıralama doğruysa 100, ilk ikisi doğru geri kalan yanlışsa 50
+      const actualTop2 = actualGroup.teamOrder.slice(0, 2);
+      const predictedTop2 = predictedGroup.teamOrder.slice(0, 2);
+      const exactMatch = predictedGroup.teamOrder.slice(0, 4).every((t, i) => t === actualGroup.teamOrder[i]);
+      if (exactMatch) {
+        breakdown.groupPositions += 100;
+      } else if (
+        actualTop2.includes(predictedTop2[0]) &&
+        actualTop2.includes(predictedTop2[1])
+      ) {
+        breakdown.groupPositions += 50;
       }
     }
   }
 
   const knockoutRounds: Array<{ pred: KnockoutPrediction; act: KnockoutPrediction | undefined; pts: number; key: keyof typeof breakdown }> = [
-    { pred: prediction.roundOf32, act: actual.roundOf32, pts: 5, key: 'roundOf32' },
-    { pred: prediction.roundOf16, act: actual.roundOf16, pts: 6, key: 'roundOf16' },
-    { pred: prediction.quarterFinals, act: actual.quarterFinals, pts: 8, key: 'quarterFinals' },
-    { pred: prediction.semiFinals, act: actual.semiFinals, pts: 10, key: 'semiFinals' },
-    { pred: prediction.thirdPlace, act: actual.thirdPlace, pts: 15, key: 'thirdPlace' },
+    { pred: prediction.roundOf32, act: actual.roundOf32, pts: 100, key: 'roundOf32' },
+    { pred: prediction.roundOf16, act: actual.roundOf16, pts: 200, key: 'roundOf16' },
+    { pred: prediction.quarterFinals, act: actual.quarterFinals, pts: 300, key: 'quarterFinals' },
+    { pred: prediction.semiFinals, act: actual.semiFinals, pts: 400, key: 'semiFinals' },
+    { pred: prediction.thirdPlace, act: actual.thirdPlace, pts: 400, key: 'thirdPlace' },
   ];
 
   for (const round of knockoutRounds) {
@@ -130,23 +133,31 @@ export function calculateScore(
   }
 
   if (actual.champion && prediction.champion === actual.champion) {
-    breakdown.champion += 25;
+    breakdown.champion += 500;
   }
 
   if (actual.topScorer && prediction.topScorer.toLowerCase() === actual.topScorer.toLowerCase()) {
-    breakdown.topScorer = 15;
+    breakdown.topScorer = 150;
   }
 
   if (actual.goldenGlove && prediction.goldenGlove.toLowerCase() === actual.goldenGlove.toLowerCase()) {
-    breakdown.goldenGlove = 10;
+    breakdown.goldenGlove = 150;
   }
 
   if (actual.knockoutScores && prediction.knockoutScores) {
+    const scoreBonusByRound: Record<string, number> = {};
+    if (actual.roundOf32) Object.keys(actual.roundOf32).forEach(id => scoreBonusByRound[id] = 50);
+    if (actual.roundOf16) Object.keys(actual.roundOf16).forEach(id => scoreBonusByRound[id] = 75);
+    if (actual.quarterFinals) Object.keys(actual.quarterFinals).forEach(id => scoreBonusByRound[id] = 100);
+    if (actual.semiFinals) Object.keys(actual.semiFinals).forEach(id => scoreBonusByRound[id] = 100);
+    if (actual.thirdPlace) Object.keys(actual.thirdPlace).forEach(id => scoreBonusByRound[id] = 100);
+    if (actual.final) Object.keys(actual.final).forEach(id => scoreBonusByRound[id] = 100);
+
     for (const matchId of Object.keys(actual.knockoutScores)) {
       const a = actual.knockoutScores[matchId];
       const p = prediction.knockoutScores?.[matchId];
       if (p && a.home === p.home && a.away === p.away) {
-        breakdown.scoreBonus += 3;
+        breakdown.scoreBonus += scoreBonusByRound[matchId] ?? 50;
       }
     }
   }
