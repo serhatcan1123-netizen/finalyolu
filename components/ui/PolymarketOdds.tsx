@@ -106,6 +106,29 @@ export default function PolymarketOdds() {
         })}
       </div>
 
+      {/* Türkiye özel satır */}
+      {(() => {
+        const turkiye = odds.find(o => o.name === 'Turkey' || o.name === 'Türkiye');
+        if (!turkiye) return null;
+        const rank = odds.findIndex(o => o.name === 'Turkey' || o.name === 'Türkiye') + 1;
+        return (
+          <div className="mx-4 mb-3 px-4 py-2.5 rounded-xl flex items-center gap-3"
+            style={{ background: 'rgba(227,10,23,0.08)', border: '1px solid rgba(227,10,23,0.25)' }}>
+            <span className="text-lg">🇹🇷</span>
+            <div className="flex-1">
+              <div className="text-xs font-semibold" style={{ color: '#E30A17' }}>Türkiye</div>
+              <div className="text-xs" style={{ color: '#8A8A9A' }}>Sıralama: #{rank}</div>
+            </div>
+            <div className="text-right">
+              <div className="text-lg font-bold font-mono-custom" style={{ color: '#E30A17' }}>
+                %{turkiye.probability.toFixed(1)}
+              </div>
+              <div className="text-xs" style={{ color: '#8A8A9A' }}>şampiyonluk şansı</div>
+            </div>
+          </div>
+        );
+      })()}
+
       <div className="px-5 py-3 text-center text-xs"
         style={{ color: '#8A8A9A', borderTop: '1px solid #2A2A3A', background: 'rgba(0,0,0,0.2)' }}>
         Kaynak: Polymarket · $1.5B+ işlem hacmi · {updatedAt ? `Son güncelleme: ${new Date(updatedAt).toLocaleTimeString('tr-TR')}` : 'Gerçek zamanlı piyasa verileri'}
