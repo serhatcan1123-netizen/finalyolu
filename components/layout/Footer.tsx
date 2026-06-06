@@ -80,6 +80,10 @@ export default function Footer() {
               {"Kullanıcı Sözleşmesi"}
             </Link>
             <span style={{ color: '#333344' }}>{"·"}</span>
+            <Link href="/gizlilik" className="text-xs transition-colors hover:text-white" style={{ color: '#555566' }}>
+              Gizlilik Politikası
+            </Link>
+            <span style={{ color: '#333344' }}>·</span>
             <Link href="/kvkk" className="text-xs transition-colors hover:text-white" style={{ color: '#555566' }}>
               {"KVKK Aydınlatma Metni"}
             </Link>

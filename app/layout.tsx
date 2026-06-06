@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { I18nProvider } from '@/lib/i18n';
 import Navbar from '@/components/layout/Navbar';
+import CookieBanner from '@/components/ui/CookieBanner';
 import Footer from '@/components/layout/Footer';
 
 export const metadata: Metadata = {
@@ -42,6 +43,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             {children}
           </main>
           <Footer />
+          <CookieBanner />
           <a href="/predict" style={{position:"fixed",bottom:"1.5rem",right:"1.5rem",zIndex:50,display:"flex",alignItems:"center",gap:"0.5rem",padding:"0.75rem 1.25rem",borderRadius:"9999px",fontWeight:"bold",color:"white",background:"linear-gradient(135deg,#C8102E,#E63946)",boxShadow:"0 4px 24px rgba(200,16,46,0.4)",textDecoration:"none"}}><span>⚽</span><span>Tahmin Et</span></a>
         </I18nProvider>
       </body>
