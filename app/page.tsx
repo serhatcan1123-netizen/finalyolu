@@ -37,6 +37,7 @@ function fadeUp(delay = 0) {
 function RibbonStrip({ h = 5 }: { h?: number }) {
   return (
     <div className="w-full flex" style={{ height: h }}>
+      <JsonLd />
       {CKEYS.map(k => <div key={k} className="flex-1" style={{ background: C[k] }} />)}
     </div>
   );
@@ -198,6 +199,40 @@ function HowItWorks() {
       </div>
     </div>
   )
+}
+
+
+function JsonLd() {
+  const schema = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      name: "finalyolu.com",
+      url: "https://finalyolu.com",
+      applicationCategory: "SportsApplication",
+      operatingSystem: "Web",
+      offers: { "@type": "Offer", price: "0", priceCurrency: "TRY" },
+      author: { "@type": "Organization", name: "finalyolu.com", url: "https://finalyolu.com" },
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Ana Sayfa", item: "https://finalyolu.com" },
+        { "@type": "ListItem", position: 2, name: "Tahmin Et", item: "https://finalyolu.com/predict" },
+        { "@type": "ListItem", position: 3, name: "Hakkimizda", item: "https://finalyolu.com/hakkimizda" },
+        { "@type": "ListItem", position: 4, name: "Kullanim Sartlari", item: "https://finalyolu.com/kullanim-sartlari" },
+        { "@type": "ListItem", position: 5, name: "Gizlilik", item: "https://finalyolu.com/gizlilik" },
+        { "@type": "ListItem", position: 6, name: "KVKK", item: "https://finalyolu.com/kvkk" },
+      ],
+    },
+  ];
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
+  );
 }
 
 export default function HomePage() {
