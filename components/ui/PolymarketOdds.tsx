@@ -49,26 +49,21 @@ export default function PolymarketOdds() {
 
   return (
     <div className="card overflow-hidden">
+      {/* Header */}
       <div className="px-5 py-4 border-b border-border flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <div className="w-7 h-7 rounded-full flex items-center justify-center text-xs font-bold"
-            style={{ background: 'linear-gradient(135deg, #00d4aa, #0066ff)', color: '#fff' }}>
-            P
+        <div>
+          <div className="font-semibold text-sm" style={{ color: '#F0F0F5' }}>
+            Küresel Tahmin Piyasası Beklentileri
           </div>
-          <div>
-            <div className="font-semibold text-sm" style={{ color: '#F0F0F5' }}>
-              Polymarket Şampiyonluk Oranları
-            </div>
-            <div className="text-xs" style={{ color: '#8A8A9A' }}>Canlı tahmin piyasası</div>
-          </div>
+          <div className="text-xs" style={{ color: '#8A8A9A' }}>Yapay Zeka & Kitle Tahmin İstatistikleri</div>
         </div>
-        <a href="https://polymarket.com/event/world-cup-winner" target="_blank" rel="noopener noreferrer"
-          className="text-xs px-3 py-1 rounded-full border transition-all hover:opacity-80"
-          style={{ color: '#00d4aa', borderColor: 'rgba(0,212,170,0.3)', background: 'rgba(0,212,170,0.08)' }}>
-          Polymarket ↗
-        </a>
+        <span className="text-xs px-3 py-1 rounded-full"
+          style={{ color: '#8A8A9A', background: 'rgba(255,255,255,0.04)', border: '1px solid rgba(255,255,255,0.08)' }}>
+          İstatistiksel Analiz
+        </span>
       </div>
 
+      {/* Liste */}
       <div className="p-4 space-y-2.5">
         {loading ? (
           <div className="text-center py-4 text-sm" style={{ color: '#8A8A9A' }}>Yükleniyor...</div>
@@ -123,15 +118,28 @@ export default function PolymarketOdds() {
               <div className="text-lg font-bold font-mono-custom" style={{ color: '#E30A17' }}>
                 %{turkiye.probability.toFixed(1)}
               </div>
-              <div className="text-xs" style={{ color: '#8A8A9A' }}>şampiyonluk şansı</div>
+              <div className="text-xs" style={{ color: '#8A8A9A' }}>şampiyonluk tahmini</div>
             </div>
           </div>
         );
       })()}
 
-      <div className="px-5 py-3 text-center text-xs"
+      {/* Footer — güncelleme zamanı */}
+      <div className="px-5 py-2.5 text-center text-xs"
         style={{ color: '#8A8A9A', borderTop: '1px solid #2A2A3A', background: 'rgba(0,0,0,0.2)' }}>
-        Kaynak: Polymarket · $1.5B+ işlem hacmi · {updatedAt ? `Son güncelleme: ${new Date(updatedAt).toLocaleTimeString('tr-TR')}` : 'Gerçek zamanlı piyasa verileri'}
+        {updatedAt ? `Son güncelleme: ${new Date(updatedAt).toLocaleTimeString('tr-TR')}` : 'Gerçek zamanlı küresel piyasa verileri'}
+      </div>
+
+      {/* Yasal Uyarı */}
+      <div className="px-5 py-3" style={{ borderTop: '1px solid rgba(255,255,255,0.04)', background: 'rgba(0,0,0,0.15)' }}>
+        <div className="text-[9.5px] font-bold tracking-widest uppercase mb-1" style={{ color: '#3d4a6b' }}>
+          Yasal Uyarı
+        </div>
+        <p className="text-[10px] leading-relaxed m-0" style={{ color: '#3d4a6b' }}>
+          Bu alandaki veriler küresel tahmin piyasalarından alınan anonim istatistiksel trendlerdir.
+          Sitemizde kesinlikle yasa dışı bahis veya şans oyunu oynatılmamaktadır.
+          finalyolu.com bağımsız bir fan platformudur; FIFA veya herhangi bir futbol federasyonu ile resmi bir bağı bulunmamaktadır.
+        </p>
       </div>
     </div>
   );
