@@ -36,9 +36,6 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className="h-full">
-      <head>
-        <script type="application/ld+json" dangerouslySetInnerHTML={{__html: \'[{"@context":"https://schema.org","@type":"WebApplication","name":"finalyolu.com","url":"https://finalyolu.com","applicationCategory":"SportsApplication","operatingSystem":"Web"},{"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"Ana Sayfa","item":"https://finalyolu.com"},{"@type":"ListItem","position":2,"name":"Tahmin Et","item":"https://finalyolu.com/predict"},{"@type":"ListItem","position":3,"name":"Hakkimizda","item":"https://finalyolu.com/hakkimizda"},{"@type":"ListItem","position":4,"name":"Kullanim Sartlari","item":"https://finalyolu.com/kullanim-sartlari"},{"@type":"ListItem","position":5,"name":"Gizlilik","item":"https://finalyolu.com/gizlilik"},{"@type":"ListItem","position":6,"name":"KVKK","item":"https://finalyolu.com/kvkk"}]}]\'}} />
-      </head>
       <body className="min-h-full flex flex-col" style={{ background: '#0A0A0F' }}>
         <I18nProvider>
           <Navbar />
