@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect } from 'react';
 import Image from 'next/image';
 import { useI18n } from '@/lib/i18n';
 import { GROUP_MATCHES } from '@/lib/api/mock-data';
 import type { Match } from '@/lib/api/mock-data';
 import { toTSI, toTSIDate } from '@/lib/utils/time';
+import { buildLiveScoreMap, type LiveScoreMap } from '@/lib/api/live-scores';
 
 const ROUNDS = ['Tümü', 'Grup Aşaması', 'Son 32', 'Son 16', 'Çeyrek Final', 'Yarı Final', 'Final'] as const;
 type RoundLabel = (typeof ROUNDS)[number];
@@ -37,8 +38,12 @@ function groupByTSIDate(matches: Match[]): Record<string, Match[]> {
   }, {} as Record<string, Match[]>);
 }
 
-function MatchRow({ match }: { match: Match }) {
-  const isLive = match.status === 'LIVE' || match.status === 'HT';
+function MatchRow({ match, liveScores }: { match: Match; liveScores: LiveScoreMap }) {
+  const key = `${match.homeTeam.slug}-${match.awayTeam.slug}`
+  const live = liveScores[key]
+  const isLive = live?.status === 'IN_PLAY' || live?.status === 'PAUSED' || live?.status === 'HALF_TIME'
+  const isFinished = live?.status === 'FINISHED'
+  const hasScore = live && (live.homeScore !== null) && (live.awayScore !== null)
 
   return (
     <div
@@ -53,6 +58,13 @@ function MatchRow({ match }: { match: Match }) {
         <div className="text-sm font-mono-custom font-semibold" style={{ color: '#C9A84C' }}>{toTSI(match.timeET)}</div>
         <div className="text-xs" style={{ color: '#8A8A9A' }}>TSİ</div>
       </div>
+      {/* Live score badge */}
+      {isLive && (
+        <div className="mr-3 flex-shrink-0 px-2 py-0.5 rounded text-xs font-bold animate-pulse"
+          style={{ background: '#E63946', color: 'white' }}>
+          CANLI
+        </div>
+      )}
 
       {/* Group badge */}
       {match.group && (
@@ -122,6 +134,22 @@ export default function FixturesPage() {
   const { locale } = useI18n();
   const [activeRound, setActiveRound] = useState<RoundLabel>('Tümü');
   const [activeGroup, setActiveGroup] = useState('Tümü');
+  const [liveScores, setLiveScores] = useState<LiveScoreMap>({});
+
+  useEffect(() => {
+    const fetchScores = async () => {
+      try {
+        const res = await fetch('/api/fixtures')
+        const data = await res.json()
+        if (data.matches) {
+          setLiveScores(buildLiveScoreMap(data.matches))
+        }
+      } catch {}
+    }
+    fetchScores()
+    const interval = setInterval(fetchScores, 60000)
+    return () => clearInterval(interval)
+  }, [])
 
   const filtered = useMemo(() => {
     return GROUP_MATCHES.filter(m => {
@@ -217,7 +245,7 @@ export default function FixturesPage() {
               <div className="card divide-y" style={{ borderColor: '#2A2A3A' }}>
                 {grouped[date].map((match, matchIndex) => (
                   <div key={match.id}>
-                    <MatchRow match={match} />
+                    <MatchRow match={match} liveScores={liveScores} />
                     {(matchIndex + 1) % 6 === 0 && matchIndex < grouped[date].length - 1 && (
                       <div className="px-4 py-2">
                       </div>
