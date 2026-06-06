@@ -21,7 +21,7 @@ export default function Footer() {
             <p className="text-sm" style={{ color: '#8A8A9A' }}>{t('footer.tagline')}</p>
             <div className="flex gap-3 mt-4">
               {['twitter', 'instagram', 'youtube'].map(s => (
-                <a
+                
                   key={s}
                   href="#"
                   className="w-8 h-8 rounded-full border border-border flex items-center justify-center transition-all hover:border-primary/50 text-xs"
@@ -42,6 +42,7 @@ export default function Footer() {
                 { href: '/groups', label: t('nav.groups') },
                 { href: '/teams', label: t('nav.teams') },
                 { href: '/predict', label: t('nav.predict') },
+                { href: '/leaderboard', label: '🏅 Sıralama' },
               ].map(l => (
                 <Link key={l.href} href={l.href} className="text-sm hover:text-primary transition-colors" style={{ color: '#8A8A9A' }}>
                   {l.label}
@@ -77,8 +78,23 @@ export default function Footer() {
 
         <div className="border-t border-border mt-8 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs" style={{ color: '#8A8A9A' }}>{t('footer.copyright')}</p>
-          <p className="text-xs" style={{ color: '#8A8A9A' }}>
-          </p>
+          <div className="flex items-center gap-4">
+            <Link
+              href="/sozlesme"
+              className="text-xs transition-colors hover:text-white"
+              style={{ color: '#555566' }}
+            >
+              Kullanıcı Sözleşmesi
+            </Link>
+            <span style={{ color: '#333344' }}>·</span>
+            <Link
+              href="/kvkk"
+              className="text-xs transition-colors hover:text-white"
+              style={{ color: '#555566' }}
+            >
+              KVKK Aydınlatma Metni
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
