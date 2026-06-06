@@ -8,7 +8,7 @@ const faqs = [
     a: 'finalyolu.com tamamen eğlence ve fan analizi amacıyla tasarlanmış ücretsiz bir simülasyon platformudur. Grup aşamasından finale kadar tüm maçların sonuçlarını, gol krallığını ve şampiyonu tahmin ederek kendi şampiyonluk senaryonu oluşturursun. Platform, futbol bilgini ve stratejik öngörünü ölçer; rastgele seçim veya şans unsuru içermez. Turnuva ilerledikçe gerçek sonuçlarla tahminlerin karşılaştırılır ve anlık puan sıralamanda yerini görürsün.',
   },
   {
-    q: 'finalyolu.com'da tahmin yapmak ücretli mi veya bahis oynatılır mı?',
+    q: "finalyolu.com'da tahmin yapmak ücretli mi veya bahis oynatılır mı?",
     a: 'Hayır. finalyolu.com tamamen ücretsizdir; herhangi bir ödeme, abonelik veya kredi kartı bilgisi gerektirmez. Platform, 7258 sayılı Kanun kapsamında tanımlanan bahis, şans oyunu veya kumar faaliyeti yürütmemektedir. Dağıtılan ödüller yalnızca en yüksek puanı toplayan kullanıcılara, nesnel bir bilgi ve yetenek sıralamasıyla verilmektedir. Milli Piyango İdaresi (MPİ) mevzuatı uyarınca bu bir yetenek yarışmasıdır.',
   },
   {
