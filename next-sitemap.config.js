@@ -1,6 +1,6 @@
 /** @type {import('next-sitemap').IConfig} */
 module.exports = {
-  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://dk2026.com',
+  siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://finalyolu.com',
   generateRobotsTxt: true,
   changefreq: 'daily',
   priority: 0.7,
