@@ -9,6 +9,7 @@ import Countdown from '@/components/ui/Countdown';
 import MatchCard from '@/components/match/MatchCard';
 import GroupTable from '@/components/match/GroupTable';
 import PolymarketOdds from '@/components/ui/PolymarketOdds';
+import SeoFaq from '@/components/ui/SeoFaq';
 import { GROUP_MATCHES, GROUPS, TOP_SCORERS } from '@/lib/api/mock-data';
 
 const C = {
@@ -534,6 +535,8 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      <SeoFaq />
 
       {/* ── PREDICT CTA ──────────────────────────────────────────────────── */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 pb-20">
