@@ -75,7 +75,15 @@ export default function Footer() {
 
         <div className="border-t border-border mt-8 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs" style={{ color: '#8A8A9A' }}>{t('footer.copyright')}</p>
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-4 flex-wrap justify-center">
+            <Link href="/hakkimizda" className="text-xs transition-colors hover:text-white" style={{ color: '#555566' }}>
+              Hakkımızda
+            </Link>
+            <span style={{ color: '#333344' }}>·</span>
+            <Link href="/kullanim-sartlari" className="text-xs transition-colors hover:text-white" style={{ color: '#555566' }}>
+              Kullanım Şartları
+            </Link>
+            <span style={{ color: '#333344' }}>·</span>
             <Link href="/sozlesme" className="text-xs transition-colors hover:text-white" style={{ color: '#555566' }}>
               {"Kullanıcı Sözleşmesi"}
             </Link>
