@@ -262,9 +262,9 @@ export default function LeaderboardPage() {
               {/* Podium prizes */}
               <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', borderBottom: '1px solid #1E1E2A' }}>
                 {([
-                  { rank: 1, color: '#C9A84C', rankLabel: 'ALTIN', prize: 'Gerçek boyutlu 2026 Dünya Kupası maketi', img: '/images/prize-trophy.png' },
-                  { rank: 2, color: '#9CA3AF', rankLabel: 'GÜMÜŞ', prize: 'İstediğin takımın forması', img: '/images/prize-jersey.jpeg' },
-                  { rank: 3, color: '#CD7F32', rankLabel: 'BRONZ', prize: 'İstediğin yerden $50 değerinde hediye kartı', img: '/images/prize-giftcard.jpeg' },
+                  { rank: 1, color: '#C9A84C', rankLabel: 'ALTIN', prize: 'Turnuva sonunda açıklanacak 🔒', img: '/images/prize-trophy.png' },
+                  { rank: 2, color: '#9CA3AF', rankLabel: 'GÜMÜŞ', prize: 'Turnuva sonunda açıklanacak 🔒', img: '/images/prize-jersey.jpeg' },
+                  { rank: 3, color: '#CD7F32', rankLabel: 'BRONZ', prize: 'Turnuva sonunda açıklanacak 🔒', img: '/images/prize-giftcard.jpeg' },
                 ] as const).map(({ rank, color, rankLabel, prize, img }) => (
                   <div key={rank} style={{ borderRight: rank < 3 ? '1px solid #1E1E2A' : 'none', borderBottom: `2px solid ${color}`, overflow: 'hidden' }}>
                     <div style={{ height: '150px', position: 'relative', overflow: 'hidden' }}>
