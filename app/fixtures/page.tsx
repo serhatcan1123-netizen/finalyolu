@@ -88,25 +88,19 @@ function MatchRow({ match, liveScores }: { match: Match; liveScores: LiveScoreMa
 
       {/* Score / VS */}
       <div className="mx-4 flex-shrink-0 text-center" style={{ minWidth: '56px' }}>
-        {match.status === 'NS' ? (
-          <div
-            className="font-display text-lg tracking-widest"
-            style={{ color: '#2A2A3A' }}
-          >
-            vs
-          </div>
-        ) : match.status === 'LIVE' || match.status === 'HT' ? (
+        {isLive && hasScore ? (
           <div>
-            <div className="font-display text-xl" style={{ color: '#F0F0F5' }}>
-              {match.homeScore ?? 0} <span style={{ color: '#2A2A3A' }}>-</span> {match.awayScore ?? 0}
+            <div className="font-display text-xl font-bold" style={{ color: '#F0F0F5' }}>
+              {live.homeScore} <span style={{ color: '#E63946' }}>-</span> {live.awayScore}
             </div>
-            <div className="badge-live" style={{ fontSize: '0.65rem', padding: '0.1rem 0.4rem' }}>
-              {match.status === 'HT' ? 'HT' : `${match.minute ?? ''}'`}
-            </div>
+          </div>
+        ) : isFinished && hasScore ? (
+          <div className="font-display text-xl" style={{ color: '#F0F0F5' }}>
+            {live.homeScore} <span style={{ color: '#2A2A3A' }}>-</span> {live.awayScore}
           </div>
         ) : (
-          <div className="font-display text-xl" style={{ color: '#F0F0F5' }}>
-            {match.homeScore} <span style={{ color: '#2A2A3A' }}>-</span> {match.awayScore}
+          <div className="font-display text-lg tracking-widest" style={{ color: '#2A2A3A' }}>
+            vs
           </div>
         )}
       </div>
