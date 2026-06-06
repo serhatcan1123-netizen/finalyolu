@@ -33,7 +33,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold mb-4" style={{ color: '#F0F0F5' }}>Bağlantılar</h4>
+            <h4 className="font-semibold mb-4" style={{ color: '#F0F0F5' }}>{"Bağlantılar"}</h4>
             <div className="flex flex-col gap-2">
               {[
                 { href: '/fixtures', label: t('nav.matches') },
@@ -50,7 +50,7 @@ export default function Footer() {
           </div>
 
           <div>
-            <h4 className="font-semibold mb-4" style={{ color: '#F0F0F5' }}>Dil / Language</h4>
+            <h4 className="font-semibold mb-4" style={{ color: '#F0F0F5' }}>{"Dil / Language"}</h4>
             <div className="flex gap-2 mb-6">
               {(['tr', 'en'] as const).map(l => (
                 <button
@@ -77,11 +77,11 @@ export default function Footer() {
           <p className="text-xs" style={{ color: '#8A8A9A' }}>{t('footer.copyright')}</p>
           <div className="flex items-center gap-4">
             <Link href="/sozlesme" className="text-xs transition-colors hover:text-white" style={{ color: '#555566' }}>
-              Kullanıcı Sözleşmesi
+              {"Kullanıcı Sözleşmesi"}
             </Link>
-            <span style={{ color: '#333344' }}>·</span>
+            <span style={{ color: '#333344' }}>{"·"}</span>
             <Link href="/kvkk" className="text-xs transition-colors hover:text-white" style={{ color: '#555566' }}>
-              KVKK Aydınlatma Metni
+              {"KVKK Aydınlatma Metni"}
             </Link>
           </div>
         </div>
