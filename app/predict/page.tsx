@@ -1,5 +1,9 @@
 'use client';
 
+// Tahmin kilitleme tarihi: 27 Haziran 2026 22:00 TSİ (UTC+3) = 19:00 UTC
+const PREDICTION_DEADLINE = new Date('2026-06-27T19:00:00Z');
+const isPredictionLocked = () => new Date() > PREDICTION_DEADLINE;
+
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { useI18n } from '@/lib/i18n';
@@ -71,6 +75,7 @@ function ProgressBar({ current, total }: { current: number; total: number }) {
 export default function PredictPage() {
   const { t, locale } = useI18n();
   const [stage, setStage] = useState<Stage>('groups');
+  const [isLocked] = useState(() => isPredictionLocked());
   const [groupPage, setGroupPage] = useState(0);
   const [prediction, setPrediction] = useState<TournamentPrediction>(getEmptyPrediction);
   const [scoreModalData, setScoreModalData] = useState<{ matchId: string; homeSlug: string | null; awaySlug: string | null; winnerSlug: string | null } | null>(null);
