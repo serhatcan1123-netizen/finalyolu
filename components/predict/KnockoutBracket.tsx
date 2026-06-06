@@ -158,25 +158,40 @@ export function getRoundOf32Matchups(groups: GroupPrediction[], playoffPicks: st
     qualifiers[grp.id] = order.slice(0, 2);
   }
 
-  // FIFA 2026 Round of 32 bracket (simplified pairings)
+  // FIFA 2026 Round of 32 official bracket (source: FIFA regulations)
+  // Match 73: A2 vs B2
+  // Match 74: E1 vs 3rd(A/B/C/D/F)
+  // Match 75: F1 vs C2
+  // Match 76: C1 vs F2
+  // Match 77: I1 vs 3rd(C/D/F/G/H)
+  // Match 78: E2 vs I2
+  // Match 79: A1 vs 3rd(C/E/F/H/I)
+  // Match 80: L1 vs 3rd(E/H/I/J/K)
+  // Match 81: D1 vs 3rd(B/E/F/I/J)
+  // Match 82: G1 vs 3rd(A/E/H/I/J)
+  // Match 83: K2 vs L2
+  // Match 84: H1 vs J2
+  // Match 85: B1 vs 3rd(E/F/G/I/J)
+  // Match 86: J1 vs H2
+  // Match 87: K1 vs 3rd(D/E/I/J/L)
+  // Match 88: D2 vs G2
   return [
-    { matchId: 'r32_1',  home: qualifiers['A']?.[0] || null, away: qualifiers['B']?.[1] || null },
-    { matchId: 'r32_2',  home: qualifiers['B']?.[0] || null, away: qualifiers['A']?.[1] || null },
-    { matchId: 'r32_3',  home: qualifiers['C']?.[0] || null, away: qualifiers['D']?.[1] || null },
-    { matchId: 'r32_4',  home: qualifiers['D']?.[0] || null, away: qualifiers['C']?.[1] || null },
-    { matchId: 'r32_5',  home: qualifiers['E']?.[0] || null, away: qualifiers['F']?.[1] || null },
-    { matchId: 'r32_6',  home: qualifiers['F']?.[0] || null, away: qualifiers['E']?.[1] || null },
-    { matchId: 'r32_7',  home: qualifiers['G']?.[0] || null, away: qualifiers['H']?.[1] || null },
-    { matchId: 'r32_8',  home: qualifiers['H']?.[0] || null, away: qualifiers['G']?.[1] || null },
-    { matchId: 'r32_9',  home: qualifiers['I']?.[0] || null, away: qualifiers['J']?.[1] || null },
-    { matchId: 'r32_10', home: qualifiers['J']?.[0] || null, away: qualifiers['I']?.[1] || null },
-    { matchId: 'r32_11', home: qualifiers['K']?.[0] || null, away: qualifiers['L']?.[1] || null },
-    { matchId: 'r32_12', home: qualifiers['L']?.[0] || null, away: qualifiers['K']?.[1] || null },
-    // 4 best 3rd-place slots — filled by user playoff picks
-    { matchId: 'r32_13', home: playoffPicks[0] || null, away: playoffPicks[1] || null },
-    { matchId: 'r32_14', home: playoffPicks[2] || null, away: playoffPicks[3] || null },
-    { matchId: 'r32_15', home: playoffPicks[4] || null, away: playoffPicks[5] || null },
-    { matchId: 'r32_16', home: playoffPicks[6] || null, away: playoffPicks[7] || null },
+    { matchId: 'r32_1',  home: qualifiers['A']?.[1] || null, away: qualifiers['B']?.[1] || null }, // A2 vs B2
+    { matchId: 'r32_2',  home: qualifiers['E']?.[0] || null, away: playoffPicks[0] || null },       // E1 vs 3rd
+    { matchId: 'r32_3',  home: qualifiers['F']?.[0] || null, away: qualifiers['C']?.[1] || null }, // F1 vs C2
+    { matchId: 'r32_4',  home: qualifiers['C']?.[0] || null, away: qualifiers['F']?.[1] || null }, // C1 vs F2
+    { matchId: 'r32_5',  home: qualifiers['I']?.[0] || null, away: playoffPicks[1] || null },       // I1 vs 3rd
+    { matchId: 'r32_6',  home: qualifiers['E']?.[1] || null, away: qualifiers['I']?.[1] || null }, // E2 vs I2
+    { matchId: 'r32_7',  home: qualifiers['A']?.[0] || null, away: playoffPicks[2] || null },       // A1 vs 3rd
+    { matchId: 'r32_8',  home: qualifiers['L']?.[0] || null, away: playoffPicks[3] || null },       // L1 vs 3rd
+    { matchId: 'r32_9',  home: qualifiers['D']?.[0] || null, away: playoffPicks[4] || null },       // D1 vs 3rd
+    { matchId: 'r32_10', home: qualifiers['G']?.[0] || null, away: playoffPicks[5] || null },       // G1 vs 3rd
+    { matchId: 'r32_11', home: qualifiers['K']?.[1] || null, away: qualifiers['L']?.[1] || null }, // K2 vs L2
+    { matchId: 'r32_12', home: qualifiers['H']?.[0] || null, away: qualifiers['J']?.[1] || null }, // H1 vs J2
+    { matchId: 'r32_13', home: qualifiers['B']?.[0] || null, away: playoffPicks[6] || null },       // B1 vs 3rd
+    { matchId: 'r32_14', home: qualifiers['J']?.[0] || null, away: qualifiers['H']?.[1] || null }, // J1 vs H2
+    { matchId: 'r32_15', home: qualifiers['K']?.[0] || null, away: playoffPicks[7] || null },       // K1 vs 3rd
+    { matchId: 'r32_16', home: qualifiers['D']?.[1] || null, away: qualifiers['G']?.[1] || null }, // D2 vs G2
   ];
 }
 
