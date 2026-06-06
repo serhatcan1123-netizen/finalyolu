@@ -37,7 +37,7 @@ export default function KullanimSartlariPage() {
             <li>18 yaşını doldurmuş olmak (18 yaş altı katılım yasaktır)</li>
             <li>Geçerli bir e-posta adresiyle kayıt olmak</li>
             <li>Her kullanıcı yalnızca bir hesap açabilir; çoklu hesap açmak diskalifiye nedenidir</li>
-            <li>Tahminlerin turnuva başlamadan (11 Haziran 2026, 19:00 CST) önce tamamlanmış olması</li>
+            <li>Grup aşaması tahminlerinin 28 Haziran 2026 tarihine kadar tamamlanmış olması; knockout aşaması tahminleri her turdan önce ayrıca kilitlenir</li>
             <li>Platform çalışanları ve birinci derece yakınları yarışmaya katılamaz</li>
           </ul>
         </section>
