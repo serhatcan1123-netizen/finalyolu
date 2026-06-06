@@ -10,7 +10,6 @@ export default function Footer() {
     <footer style={{ background: '#0A0A0F', borderTop: '1px solid #2A2A3A' }} className="mt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {/* Brand */}
           <div>
             <div className="flex items-center gap-2 mb-3">
               <span className="text-2xl">🏆</span>
@@ -33,7 +32,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Links */}
           <div>
             <h4 className="font-semibold mb-4" style={{ color: '#F0F0F5' }}>Bağlantılar</h4>
             <div className="flex flex-col gap-2">
@@ -51,7 +49,6 @@ export default function Footer() {
             </div>
           </div>
 
-          {/* Language + Disclaimer */}
           <div>
             <h4 className="font-semibold mb-4" style={{ color: '#F0F0F5' }}>Dil / Language</h4>
             <div className="flex gap-2 mb-6">
@@ -79,19 +76,11 @@ export default function Footer() {
         <div className="border-t border-border mt-8 pt-6 flex flex-col md:flex-row items-center justify-between gap-4">
           <p className="text-xs" style={{ color: '#8A8A9A' }}>{t('footer.copyright')}</p>
           <div className="flex items-center gap-4">
-            <Link
-              href="/sozlesme"
-              className="text-xs transition-colors hover:text-white"
-              style={{ color: '#555566' }}
-            >
+            <Link href="/sozlesme" className="text-xs transition-colors hover:text-white" style={{ color: '#555566' }}>
               Kullanıcı Sözleşmesi
             </Link>
             <span style={{ color: '#333344' }}>·</span>
-            <Link
-              href="/kvkk"
-              className="text-xs transition-colors hover:text-white"
-              style={{ color: '#555566' }}
-            >
+            <Link href="/kvkk" className="text-xs transition-colors hover:text-white" style={{ color: '#555566' }}>
               KVKK Aydınlatma Metni
             </Link>
           </div>
