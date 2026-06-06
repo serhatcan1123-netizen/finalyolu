@@ -74,15 +74,7 @@ export default function Navbar() {
             {/* Right: lang switcher + hamburger */}
             <div className="flex items-center gap-4">
               {/* Language switcher */}
-              <button
-                onClick={() => setLocale(locale === 'tr' ? 'en' : 'tr')}
-                className="flex items-center gap-1 text-sm font-mono-custom border border-border rounded-lg px-3 py-1.5 transition-all hover:border-primary/50"
-                style={{ color: '#8A8A9A' }}
-              >
-                <span style={{ color: locale === 'tr' ? '#C9A84C' : '#8A8A9A' }}>TR</span>
-                <span style={{ color: '#2A2A3A' }}>|</span>
-                <span style={{ color: locale === 'en' ? '#C9A84C' : '#8A8A9A' }}>EN</span>
-              </button>
+              {/* dil secimi gecici olarak gizlendi */}
 
               {/* Mobile hamburger */}
               <button

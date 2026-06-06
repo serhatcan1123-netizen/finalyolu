@@ -52,7 +52,7 @@ export default function Footer() {
           <div>
             <h4 className="font-semibold mb-4" style={{ color: '#F0F0F5' }}>{"Dil / Language"}</h4>
             <div className="flex gap-2 mb-6">
-              {(['tr', 'en'] as const).map(l => (
+              {(['tr'] as const).map(l => (
                 <button
                   key={l}
                   onClick={() => setLocale(l)}
