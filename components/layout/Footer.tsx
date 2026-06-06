@@ -20,7 +20,7 @@ export default function Footer() {
             <p className="text-sm" style={{ color: '#8A8A9A' }}>{t('footer.tagline')}</p>
             <div className="flex gap-3 mt-4">
               {['twitter', 'instagram', 'youtube'].map(s => (
-                
+                <a
                   key={s}
                   href="#"
                   className="w-8 h-8 rounded-full border border-border flex items-center justify-center transition-all hover:border-primary/50 text-xs"
