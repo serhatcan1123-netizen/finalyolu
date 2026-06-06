@@ -93,25 +93,34 @@ export default function PredictPage() {
     if (typeof window === 'undefined') return;
     const params = new URLSearchParams(window.location.search);
     if (params.get('auth') !== 'success') return;
-    const pending = localStorage.getItem('finalyolu_pending_prediction');
-    if (!pending) return;
-    const { nickname, predictions: pendingPredictions } = JSON.parse(pending);
-
     supabase.auth.getSession().then(async ({ data: { session } }) => {
       if (!session) return;
       const alreadySaved = localStorage.getItem('finalyolu_leaderboard_id');
       if (alreadySaved) return;
+
+      // Supabase'den pending prediction çek
+      const { data: pending } = await supabase
+        .from('pending_predictions')
+        .select('*')
+        .eq('email', session.user.email)
+        .order('created_at', { ascending: false })
+        .limit(1)
+        .single();
+
+      if (!pending) return;
+
       const id = await saveToLeaderboard(
-        nickname,
-        pendingPredictions,
+        pending.nickname,
+        pending.predictions,
         session.user.email,
         session.user.id
       );
       if (id) {
         localStorage.setItem('finalyolu_leaderboard_id', id);
-        localStorage.removeItem('finalyolu_pending_prediction');
         setLeaderboardId(id);
-        setSuccessNickname(nickname);
+        setSuccessNickname(pending.nickname);
+        // Pending kaydı sil
+        await supabase.from('pending_predictions').delete().eq('id', pending.id);
       }
     });
   }, []);

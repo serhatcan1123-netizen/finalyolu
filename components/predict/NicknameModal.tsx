@@ -27,11 +27,16 @@ export default function NicknameModal({ predictions, onClose, onSaved }: Nicknam
     setLoading(true)
     setError("")
 
-    // Tahminleri localStorage'a geçici sakla (magic link dönünce kullanılacak)
-    localStorage.setItem("finalyolu_pending_prediction", JSON.stringify({
-      nickname: trimmed,
-      predictions,
-    }))
+    // Tahminleri Supabase'e kaydet (farklı tarayıcı sorunu çözümü)
+    const { error: dbError } = await supabase
+      .from('pending_predictions')
+      .insert([{ email: emailTrimmed, nickname: trimmed, predictions }])
+
+    if (dbError) {
+      setLoading(false)
+      setError("Kayıt sırasında hata oluştu, tekrar dene")
+      return
+    }
 
     const { error: authError } = await supabase.auth.signInWithOtp({
       email: emailTrimmed,
