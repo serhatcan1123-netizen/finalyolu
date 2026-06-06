@@ -268,7 +268,7 @@ export default function LeaderboardPage() {
                 ] as const).map(({ rank, color, rankLabel, prize, img }) => (
                   <div key={rank} style={{ borderRight: rank < 3 ? '1px solid #1E1E2A' : 'none', borderBottom: `2px solid ${color}`, overflow: 'hidden' }}>
                     <div style={{ height: '150px', position: 'relative', overflow: 'hidden' }}>
-                      <img src={img} alt={prize} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', filter: 'brightness(0.65)' }} />
+                      <img src={img} alt={prize} style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center', filter: 'brightness(0.65) blur(3px)' }} />
                       <span style={{ position: 'absolute', top: '10px', left: '10px', background: color, color: '#0A0A0F', fontFamily: 'JetBrains Mono, monospace', fontSize: '0.55rem', fontWeight: 700, letterSpacing: '0.1em', padding: '2px 7px', borderRadius: '3px' }}>
                         {rankLabel}
                       </span>
